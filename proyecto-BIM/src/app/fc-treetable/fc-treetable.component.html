@@ -1,0 +1,54 @@
+<table id="myTable" class="table table-responsive styled-table" [ngClass]="{ 'scrollable': scroll }">
+    <caption>{{caption}}</caption>
+    <ng-template *ngIf="values; then fcTable; else fcEmpty"></ng-template>
+    <ng-template #fcTable>
+        <thead>
+            <tr>
+                <th></th> <!--- Columna vacia para flecha que expande los nodos -->
+                <th class="row-header" *ngFor="let map of columnMaps">{{ map.header }}</th>
+                <th class="action-header"> Acciones </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="clickable" *ngFor="let value of flatTable"  id="{{value.data.id}}" (click)="highlight($event)"
+            [ngClass]="{ 'invisible' : !value.visible }">
+                <ng-container>
+                    <td>
+                        <button *ngIf="value.expandable" id="angleButton" [disabled]="!value.expandable" (click)="expandOrContract($event)"><fa-icon [icon]="angleIcon"></fa-icon></button>
+                    </td>
+                    <td class="row-data" *ngFor="let map of columnMaps"
+                        [fcStyleCell]="value.data[map.access(value)]">
+                        {{ value.data[map.access(value)] | formatCell}}</td>
+                    <td class="btn-groups btn-group-pill row-action">
+                        <ng-container *ngIf="value.parent && !value.expandable">
+                            <Button class="btn btn-tertiary"
+                                style="text-align: center;">
+                                Editar Tarea
+                            </Button>
+                            <Button class="btn btn-danger"
+                                style="text-align: center;">
+                                Deshacer Tarea
+                            </Button>
+                        </ng-container>
+                    </td>
+                </ng-container>
+            </tr>
+        </tbody>
+    </ng-template>
+    <ng-template #fcEmpty>
+        No hay datos disponibles para cargar
+    </ng-template>
+</table>
+
+<!-- <div class="btn-groups btn-group-pill">
+                        <Button pButton class="btn btn-tertiary"
+                          *ngIf="!rowNode.node.children.length && rowData.estado.includes('Completa')" data-toggle="modal"
+                          data-target="#myModal" style="text-align: center;" (click)="openModal('editar', rowNode.node)">
+                          Editar Tarea
+                        </Button>
+                        <Button pButton class="btn btn-danger"
+                          *ngIf="!rowNode.node.children.length && rowData.estado.includes('Completa')" style="text-align: center;"
+                          (click)="confirmarEliminar(rowNode.node)">
+                          Deshacer Tarea
+                        </Button>
+                      </div> -->
