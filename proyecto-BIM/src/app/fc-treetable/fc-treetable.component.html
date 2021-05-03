@@ -4,7 +4,7 @@
     <ng-template #fcTable>
         <thead>
             <tr>
-                <th></th> <!--- Columna vacia para flecha que expande los nodos -->
+                <th class="row-header"></th> <!--- Columna vacia para flecha que expande los nodos -->
                 <th class="row-header" *ngFor="let map of columnMaps">{{ map.header }}</th>
                 <th class="action-header"> Acciones </th>
             </tr>
@@ -13,21 +13,41 @@
             <tr class="clickable" *ngFor="let value of flatTable"  id="{{value.data.id}}" (click)="highlight($event)"
             [ngClass]="{ 'invisible' : !value.visible }">
                 <ng-container>
-                    <td>
-                        <button *ngIf="value.expandable" id="angleButton" [disabled]="!value.expandable" (click)="expandOrContract($event)"><fa-icon [icon]="angleIcon"></fa-icon></button>
+                    <td class="row-data"
+                        [ngClass]="{
+                            'parent': value.expandable,
+                            'child': value.expandable && value.parent
+                        }">
+                        <button *ngIf="value.expandable" id="angleButton" [disabled]="!value.expandable" (click)="expandOrContract($event)">
+                            <fa-icon *ngIf="!value.expanded" [icon]="angleRight"></fa-icon>
+                            <fa-icon *ngIf="value.expanded" [icon]="angleDown"></fa-icon>
+                        </button>
                     </td>
                     <td class="row-data" *ngFor="let map of columnMaps"
+                        [ngClass]="{
+                            'idField': value.data[map.access(value)] == value.data.id,
+                            'parent': value.data[map.access(value)] == value.data.id && value.expandable,
+                            'child': value.data[map.access(value)] == value.data.id && value.parent
+                        }"
                         [fcStyleCell]="value.data[map.access(value)]">
-                        {{ value.data[map.access(value)] | formatCell}}</td>
+                        {{ value.data[map.access(value)] | formatCell}}
+                    </td>
+                    <!-- Action Buttons -->
                     <td class="btn-groups btn-group-pill row-action">
-                        <ng-container *ngIf="value.parent && !value.expandable">
-                            <Button class="btn btn-tertiary"
-                                style="text-align: center;">
+                        <ng-container *ngIf="value.parent && value.data.estado.includes('Completa')">
+                            <Button class="btn btn-tertiary action-btn action-edit"
+                                style="text-align: center;" (click)="isSelected($event,'edit')">
                                 Editar Tarea
                             </Button>
-                            <Button class="btn btn-danger"
-                                style="text-align: center;">
+                            <Button class="btn btn-danger action-btn action-del"
+                                style="text-align: center;" (click)="isSelected($event,'delete')">
                                 Deshacer Tarea
+                            </Button>
+                        </ng-container>
+                        <ng-container *ngIf="value.parent && !value.data.estado.includes('Completa')">
+                            <Button class="btn btn-tertiary action-btn action-comp"
+                                style="text-align: center;" (click)="isSelected($event,'fill')">
+                                Completar Tarea
                             </Button>
                         </ng-container>
                     </td>

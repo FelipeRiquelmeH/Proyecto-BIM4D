@@ -11,7 +11,7 @@
     display: block;
 }
 
-.styled-table tbody{
+.scrollable tbody{
     display: block;
     width: fit-content;
     overflow-y: scroll;
@@ -21,7 +21,7 @@
 }.row-data{
     width: 100px;
 }.action-header{
-    width: 135px;
+    width: 118px;
 }.row-action{
     width: 100px;
 }
@@ -60,6 +60,24 @@
 .btn-groups{
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
+}
+
+.action-del{
+    background-color: #ff5252;
+    color: #ffffff;
+    cursor: pointer;
+}
+
+.action-edit{
+    background-color: #ffff00;
+    cursor: pointer;
+}
+
+.action-comp{
+    background-color: #08b960;
+    color: #ffffff;
+    cursor: pointer;
 }
 
 th > button{
@@ -75,6 +93,10 @@ th > button{
 button:hover{
     -webkit-transition: all 0.3s;
     transition: all 0.3s;
+}
+
+.action-btn{
+    border-radius: 50px;
 }
 
 #angleButton{
@@ -93,4 +115,12 @@ button:hover{
 
 #angleButton > fa-icon{
     pointer-events: none;
+}
+
+// ARREGLAR ESTILOS DE HIJOS CUANDO SE EXPANDEN LOS NODOS
+
+.child #angleButton{
+    margin-left: 20px;
+}.child{
+    margin-left: 20px;
 }

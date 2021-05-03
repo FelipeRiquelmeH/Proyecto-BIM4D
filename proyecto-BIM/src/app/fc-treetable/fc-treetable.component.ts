@@ -1,9 +1,15 @@
-import { Component, Input, OnChanges } from '@angular/core';
-import { faAngleRight } from '@fortawesome/free-solid-svg-icons';
+import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
+import { faAngleDown, faAngleRight } from '@fortawesome/free-solid-svg-icons';
 import { ColumnMap } from '../models/columnMap';
 import { ColumnSetting } from '../models/columnSetting';
 import { Tarea } from '../models/tarea';
 import { TreeNode } from '../models/treeNode';
+
+export interface ActionEvent{
+  tareas: TreeNode[] | null,
+  seleccion: string,
+  accion: string
+}
 
 @Component({
   selector: 'fc-treetable',
@@ -15,17 +21,20 @@ export class FcTreetableComponent implements OnChanges {
   @Input() settings: ColumnSetting[]
   @Input() caption: string = 'My Table'
   @Input() pagination: boolean
-  @Input() scroll: boolean
+  @Input() scroll: boolean = false;
 
-  readonly angleIcon = faAngleRight
+  @Output() notify: EventEmitter<ActionEvent> = new EventEmitter<ActionEvent>()
+
+  readonly angleRight = faAngleRight
+  readonly angleDown = faAngleDown
+
+  private treeTable: any[]
   flatTable: any[] = []
-  treeTable: any[]
   keys: string[]
   columnMaps: ColumnMap[]
   
   constructor() {
     this.pagination = false
-    this.scroll = false
   }
 
   ngOnChanges(){
@@ -65,7 +74,7 @@ export class FcTreetableComponent implements OnChanges {
     }
   }
 
-  flatten(tableData: TreeNode[], flat: any[]){
+  private flatten(tableData: TreeNode[], flat: any[]){
     for(let i = 0; i < tableData.length; i++){
       flat.push(tableData[i])
       if(tableData[i].children?.length){
@@ -74,7 +83,7 @@ export class FcTreetableComponent implements OnChanges {
     }
   }
 
-  formatData(tableData: any[]): any[]{
+  private formatData(tableData: any[]): any[]{
     let formattedData: Tarea[] = []
 
     for(let i = 0; i < tableData.length; i++){
@@ -88,7 +97,7 @@ export class FcTreetableComponent implements OnChanges {
     return formattedData
   }
 
-  createTree(tableData: Tarea[], parent: string | null): any[] {
+  private createTree(tableData: Tarea[], parent: string | null): any[] {
     let dataArray: TreeNode[] = []
 
     for(let i = 0; i < tableData.length ; i++){
@@ -135,8 +144,6 @@ export class FcTreetableComponent implements OnChanges {
         this.hideNode(children![i].data.id)
       }
 
-      // console.log(children![i].expanded)
-
       if(children![i].expanded){
         this.moveChildrenNodes(children![i], mode)
       }
@@ -157,14 +164,8 @@ export class FcTreetableComponent implements OnChanges {
 
   expandOrContract(event: any){
     let rowId = event.target.parentNode.parentNode.id,
-        nodeData: TreeNode,
+        nodeData: TreeNode = this.searchById(rowId,this.flatTable),
         mode: string
-
-    for(let i = 0; i < this.flatTable.length; i++){
-      if(this.flatTable[i].data.id == rowId){
-        nodeData = this.flatTable[i]
-      }
-    }
 
     if(nodeData!){
       nodeData.expanded = !nodeData.expanded
@@ -192,7 +193,41 @@ export class FcTreetableComponent implements OnChanges {
     }
   }
 
-  isSelected(){
-    
+  isSelected(event: any, mode: string){
+    let rowId = event.target.parentNode.parentNode.id,
+        nodeData: TreeNode = this.searchById(rowId,this.flatTable)
+
+    if(nodeData!){
+      let actionEvent = {
+        tareas: [nodeData],
+        seleccion: 'single',
+        accion: mode
+      }
+      this.notify.emit(actionEvent)
+    }
   }
+
+  multipleSelection(){
+
+  }
+
+
+  private searchById(element: any, searchArray: TreeNode[]): any{
+    let result = []
+    
+    for(let i = 0; i < searchArray.length; i++){
+      if(searchArray[i].data.id == element){
+        result.push(searchArray[i])
+      }
+    }
+
+    if(result.length > 1){
+      return result
+    }else if(result.length == 1){
+      return result[0]
+    }else{
+      return null
+    }
+  }
+
 }

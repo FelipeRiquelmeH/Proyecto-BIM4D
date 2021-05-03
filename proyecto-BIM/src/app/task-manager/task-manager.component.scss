@@ -1,0 +1,140 @@
+.modal{
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    padding-top: 100px; /* Location of the box */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content */
+.modal-content {
+    position: relative;
+    margin: auto;
+    width: 600px;
+    min-width: max-content;
+    border-style: solid;
+    border-color: #e9ecef;
+    border-width: 2px;
+    border-radius: 20px;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+    -webkit-animation-name: animatetop;
+    -webkit-animation-duration: 0.4s;
+    animation-name: animatetop;
+    animation-duration: 0.4s
+}
+
+.modal-header {
+    color: #868e96;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    padding: 8px 8px;
+    border-top-style: solid;
+    border-top-color: #e9ecef;
+    border-top-width: 2px;
+}
+
+.modal-body {
+    color: #868e96;
+    padding: 8px 8px;
+    border-top-style: solid;
+    border-top-color: #e9ecef;
+    border-top-width: 2px;
+}
+
+.modal-footer {
+    color: #868e96;
+    padding: 8px 8px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    border-top-style: solid;
+    border-top-color: #e9ecef;
+    border-top-width: 2px;
+}
+
+.close-button {
+    border-style: solid;
+    border-radius: 50%;
+    border-color: #000;
+    background-color: bisque;
+    padding: 8px 14px;
+    vertical-align: middle;
+    overflow: hidden;
+    text-align: center;
+    cursor: pointer;
+}
+
+.topright {
+    position: absolute;
+    right: 0;
+    top: 0
+}
+
+.container{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+}
+
+.modal-btn{
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+    border-radius: 20px;
+}:hover{
+    -webkit-transition: all 0.3s;
+    transition: all 0.3s;
+}
+
+#completar{
+    background-color: #08b960;
+    color: #ffffff;
+    cursor: pointer;
+}
+
+#editar{
+    background-color: #ffff00;
+    cursor: pointer;
+}
+
+#cancelar{
+    background-color: rgb(216, 115, 115);
+}
+
+#taskHeader > *{
+    margin-right: 30%;
+}
+  
+/* Add Animation */
+@-webkit-keyframes animatetop {
+    from {top:-300px; opacity:0} 
+    to {top:0; opacity:1}
+  }
+  
+  @keyframes animatetop {
+    from {top:-300px; opacity:0}
+    to {top:0; opacity:1}
+  }
+  
+  /* The Close Button */
+  .close {
+    color: white;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+  }
+  
+  .close:hover,
+  .close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+  }

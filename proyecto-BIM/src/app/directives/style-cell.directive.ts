@@ -25,13 +25,13 @@ export class StyleCellDirective implements OnInit {
         )
       }
 
-      if (/^\d+$/.test(this.fcStyleCell)) {
-        this.renderer.setStyle(
-          this.elementRef.nativeElement,
-          'text-align',
-          'center',
-        )
-      }
+      // if (/^\d+$/.test(this.fcStyleCell)) {
+      //   this.renderer.setStyle(
+      //     this.elementRef.nativeElement,
+      //     'text-align',
+      //     'center',
+      //   )
+      // }
 
       //Task Status Style
       switch(this.fcStyleCell){

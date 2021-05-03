@@ -1,7 +1,58 @@
 <div id="contenidoTab" class="x-card-body collapse show" style="margin-left: 10px;">
-    <fc-treetable [caption]="'Lista de Tareas'" [values]="tareas"></fc-treetable>
+    <fc-treetable 
+        [caption]="'Lista de Tareas'"
+        [values]="tareas"
+        [scroll]="true"
+        (notify)="onNotify($event)">
+    </fc-treetable>
 
 
+    <div *ngIf="triggerModal" id="myModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button topright" (click)="triggerModal = false">&times;</span>
+            <ng-container *ngIf="modalType == 'single'">
+                <div id="taskHeader" class="modal-header">
+                    <h2><strong>Tarea ID: {{selected!.data.id}}</strong></h2>
+                    <h2><strong>{{selected!.data.nombre}}</strong></h2>
+                </div>
+                <div class="modal-body">
+                    <div class="container">
+                        <div>
+                            <b>Fecha Inicio:</b> {{selected!.data.inicio}}<br>
+                            <b>Fecha Fin:</b> {{selected!.data.fin}}<br>
+                            <b>Fecha Completada:</b> {{selected!.data.completa}}<br>
+                            <b>Estado de la Tarea:</b> {{selected!.data.estado}}<br>
+                        </div>
+                        <div>
+                            <form class="form-inline">
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <p>Aca va un datepicker</p>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button *ngIf="actionMode == 'fill'" id="completar" class="btn modal-btn" (click)="completarTarea()">Completar Tarea</button>
+                    <button *ngIf="actionMode == 'edit'" id="editar" class="btn modal-btn" (click)="editarTarea()">Editar Tarea</button>
+                </div>
+            </ng-container>
+            <ng-container *ngIf="modalType == 'multiple'">
+                <span class="close">&times;</span>
+                <div class="modal-header">
+                    <h2>Modal Header</h2>
+                </div>
+                <div class="modal-body">
+                    
+                </div>
+                <div class="modal-footer">
+                    <h3>Modal Footer</h3>
+                </div>
+            </ng-container>
+        </div>
+    </div>
     <!-- <div class="modal" id="myModal">
         <div class="modal-dialog">
             <div class="modal-content">
