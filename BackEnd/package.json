@@ -1,0 +1,28 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "Autodesk API backend for BIM 4D app",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FelipeRiquelmeH/Proyecto-BIM4D.git"
+  },
+  "keywords": [
+    "BIM4D",
+    "Backend"
+  ],
+  "author": "Felipe Riquelme, Cristian Monrroy",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/FelipeRiquelmeH/Proyecto-BIM4D/issues"
+  },
+  "homepage": "https://github.com/FelipeRiquelmeH/Proyecto-BIM4D#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "forge-apis": "^0.8.5",
+    "multer": "^1.4.2"
+  }
+}
