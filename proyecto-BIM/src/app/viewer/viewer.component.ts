@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { ForgeService } from '../services/forge.service';
+
 
 @Component({
   selector: 'app-viewer',
@@ -7,9 +9,11 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ViewerComponent implements OnInit {
 
-  constructor() { }
+  constructor(private forgeService: ForgeService) { 
+  }
 
   ngOnInit(): void {
+    console.log('8bqK6hofASylpd1YSBkUbveFGJlAPgg1','fdHMGRDKZsJjzJ9J')
   }
 
 }
