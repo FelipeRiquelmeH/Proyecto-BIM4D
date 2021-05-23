@@ -22,7 +22,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
     TaskManagerComponent,
     FcTreetableComponent,
     StyleCellDirective,
-    FormatCellPipe
+    FormatCellPipe,
   ],
   imports: [
     BrowserModule,

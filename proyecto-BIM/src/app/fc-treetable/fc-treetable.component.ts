@@ -50,7 +50,7 @@ export class FcTreetableComponent implements OnChanges {
         
         // Esta parte es para evitar poner un array como header
         let valueArray = Object.values(this.values[0])
-        let childTag = []
+        let childTag:any[] = []
         for(let i = 0, j = 0; i < valueArray.length; i++){
           if(Array.isArray(valueArray[i])){
             childTag[j] = i
@@ -213,7 +213,7 @@ export class FcTreetableComponent implements OnChanges {
 
 
   private searchById(element: any, searchArray: TreeNode[]): any{
-    let result = []
+    let result:any[] = []
     
     for(let i = 0; i < searchArray.length; i++){
       if(searchArray[i].data.id == element){
