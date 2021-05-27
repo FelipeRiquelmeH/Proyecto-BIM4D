@@ -1,6 +1,7 @@
-import { TokenType } from '@angular/compiler/src/ml_parser/lexer';
-import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy } from '@angular/core';
 import { ForgeService } from '../services/forge.service';
+import { ProgressManagerExtension } from './extensions/progressManager';
+import { FourdplanToolbarExtension } from './extensions/fourdplanToolbar';
 
 declare const Autodesk: any
 
@@ -9,46 +10,33 @@ declare const Autodesk: any
   templateUrl: './viewer.component.html',
   styleUrls: ['./viewer.component.scss']
 })
-export class ViewerComponent implements OnInit, AfterViewInit, OnDestroy {
+export class ViewerComponent implements AfterViewInit, OnDestroy {
   public viewer: any
   private project: string = 'fourdplan'
 
   constructor(private forgeService: ForgeService){ 
   }
 
-  ngOnInit(): void {
-    document.addEventListener('DOMContentLoaded', () => {
-      let viewerjs = document.createElement('script'),
-          threejs = document.createElement('script')
-
-      viewerjs.type = 'text/javascript'
-      threejs.type = 'text/javascript'
-
-      viewerjs.src = 'https://developer.api.autodesk.com/derivativeservice/v2/viewers/viewer3D.js?v=7.4'
-      threejs.src = "https://developer.api.autodesk.com/derivativeservice/v2/viewers/three.min.js?v=v2.17"
-      document.getElementsByTagName('head')[0].appendChild(viewerjs)
-      document.getElementsByTagName('head')[0].appendChild(threejs)
+  async ngAfterViewInit(): Promise<void> {
+    document.addEventListener('DOMContentLoaded', async () => {
+      let cliId = '8bqK6hofASylpd1YSBkUbveFGJlAPgg1'
+      let cliSecret = 'fdHMGRDKZsJjzJ9J'
+      let res = await this.forgeService.getAccessToken(cliId, cliSecret)
+        
+      let bucketKey = await this.searchBucket(res.access_token, res.token_type, cliId.toLowerCase() + '-' + this.project)
+      let object = await this.searchObjects(res.access_token, res.token_type, bucketKey)
+      let model = await this.loadModel(res.access_token,object['objectId'],object['objectKey'])
+      if(model['status'] == 'success' && (model['progress'] == 'success' || model['progress'] == 'complete')){
+        this.launchViewer(res.access_token, model['urn'])
+      }
     })
   }
 
-  async ngAfterViewInit(): Promise<void> {
-    let cliId = '8bqK6hofASylpd1YSBkUbveFGJlAPgg1'
-    let cliSecret = 'fdHMGRDKZsJjzJ9J'
-    let res = await this.forgeService.getAccessToken(cliId, cliSecret)
-      
-    let bucketKey = await this.searchBucket(res.access_token, res.token_type, cliId.toLowerCase() + '-' + this.project)
-    let object = await this.searchObjects(res.access_token, res.token_type, bucketKey)
-    let model = await this.loadModel(res.access_token,object['objectId'],object['objectKey'])
-    if(model['status'] == 'success' && (model['progress'] == 'success' || model['progress'] == 'complete')){
-      this.launchViewer(res.access_token, model['urn'])
-    }
-  }
-
   ngOnDestroy(){
-    this.viewer.teardown()
+    // this.viewer.teardown()
     this.viewer.finish()
-    this.viewer = null
     Autodesk.Viewing.shutdown()
+    // this.viewer = null
   }
 
   async searchBucket(accessToken: string, tokenType: string, bucketKey: string): Promise<string>{
@@ -115,20 +103,28 @@ export class ViewerComponent implements OnInit, AfterViewInit, OnDestroy {
         var token = access
         var timeInSeconds = 3599
         onTokenReady(token, timeInSeconds)
-      }
+      },
     }
 
     Autodesk.Viewing.Initializer(options, () => {
+      const config = {
+        extensions: [
+          'ProgressManagerExtension',
+          'FourdplanToolbarExtension'
+        ]
+      }
       var viewerElement = document.getElementById('bimViewer')!
-      this.viewer = new Autodesk.Viewing.Private.GuiViewer3D(viewerElement)
+      this.viewer = new Autodesk.Viewing.Private.GuiViewer3D(viewerElement, config)
       var started = this.viewer.start()
       if(started > 0){
         console.error('Failed to create a Viewer: WebGL not suppoerted.')
         return
       }
 
+      Autodesk.Viewing.theExtensionManager.registerExtension('ProgressManagerExtension',ProgressManagerExtension)
+      Autodesk.Viewing.theExtensionManager.registerExtension('FourdplanToolbarExtension',FourdplanToolbarExtension)
+
       var documentId = 'urn:' + urn
-      let viewerInstance
       Autodesk.Viewing.Document.load(documentId, 
         (doc) => {
           this.onDocumentLoadSuccess(doc, this.viewer)
@@ -137,16 +133,15 @@ export class ViewerComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   onDocumentLoadSuccess(doc: Autodesk.Viewing.Document, viewer: any){
-    console.log(doc)
     var root = doc.getRoot()
-    console.log(root)
-    console.log(root.search({type: 'geometry'}))
     var viewables = root.getDefaultGeometry()
-    console.log(viewables)
     viewer.loadDocumentNode(doc, viewables).then(i => {
       var instance = new CustomEvent("viewerinstance", {detail: {viewer: viewer}})
       document.dispatchEvent(instance)
     })
+    // viewer.addEventListener( Autodesk.Viewing.GEOMETRY_LOADED_EVENT, () => {
+    //   this.viewer.setThemingColor(4686, new THREE.Vector4( 255 / 255, 0, 0, 1))
+    // })
   }
 
   onDocumentLoadFailure(viewerErrorCode: any){

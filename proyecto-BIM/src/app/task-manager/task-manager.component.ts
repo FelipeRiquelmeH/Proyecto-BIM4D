@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Tarea } from '../models/tarea';
 import { TreeNode } from '../models/treeNode';
+import { RecursoService } from '../services/recurso.service';
 import { Test } from '../test'
 
 @Component({
@@ -9,7 +10,7 @@ import { Test } from '../test'
   styleUrls: ['./task-manager.component.scss']
 })
 export class TaskManagerComponent implements OnInit {
-  tareas: Tarea[] = new Test().data
+  tareas: Tarea[]
   
   public triggerModal: boolean = false
   public modalType: string = ''
@@ -18,9 +19,10 @@ export class TaskManagerComponent implements OnInit {
   selected: TreeNode | null
   multSelected : TreeNode[]
 
-  constructor() { }
+  constructor(private recursoService: RecursoService) { }
 
   ngOnInit(): void {
+    this.tareas = this.recursoService.getPlanificacion()
   }
 
   public completarTarea(){

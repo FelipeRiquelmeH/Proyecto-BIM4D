@@ -4,8 +4,27 @@ body {
     width: 100vw;
     height: 100vh;
 }
+
+.container{
+    padding-left: 10px;
+    display: flex;
+    flex-direction: row;
+}
+
+#infoSec{
+    border-left: 5px;
+    background-color: gray;
+    width: 29%;
+    height: 100vh;
+    // border-color: black;
+    // border-radius: 2px;
+    // border-style: solid;
+}
+
 #viewer {
+    border-style: solid;
+    margin-left: 30%;
     position: absolute;
-    width: 80%;
-    height: 80%;
+    width: 65%;
+    height: 70%;
 }

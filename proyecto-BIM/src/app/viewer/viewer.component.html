@@ -3,12 +3,21 @@
     <meta charset="utf-8">
 
     <link rel="stylesheet" href="https://developer.api.autodesk.com/modelderivative/v2/viewers/7.*/style.min.css" type="text/css">
-    <!-- <script src="https://developer.api.autodesk.com/modelderivative/v2/viewers/7.*/viewer3D.min.js"></script> -->
-
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
 </head>
 <body>
-    <script src="https://developer.api.autodesk.com/modelderivative/v2/viewers/7.*/viewer3D.js"></script>
-    <div id="viewer"> 
-        <div id="bimViewer" class="viewer"></div>
+    <div class="container">
+        <div id="viewer" class="column"> 
+            <div id="bimViewer" class="viewer"></div>
+        </div>
+        <div class="column" id="infoSec" style="height: 100%;">
+            <div id="secTitle">
+                <p>Seccion de informacion</p>
+            </div>
+            <div id="secBody">
+                <button> Mostrar Tareas asociadas </button>
+            </div>
+    
+        </div>
     </div>
 </body>
