@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { BimViewerComponent } from './bim-viewer/bim-viewer.component';
 import { TaskManagerComponent } from './task-manager/task-manager.component';
-import { ViewerComponent } from './viewer/viewer.component';
 
 const routes: Routes = [
   {
@@ -13,7 +13,7 @@ const routes: Routes = [
     path: 'tareas', component: TaskManagerComponent
   },
   {
-    path: 'modelo-bim', component: ViewerComponent 
+    path: 'modelo-bim', component: BimViewerComponent 
   }
 ];
 

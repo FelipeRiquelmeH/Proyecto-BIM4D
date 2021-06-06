@@ -6,7 +6,7 @@ import { FourdplanToolbarExtension } from './extensions/fourdplanToolbar';
 declare const Autodesk: any
 
 @Component({
-  selector: 'app-viewer',
+  selector: 'fdp-viewer',
   templateUrl: './viewer.component.html',
   styleUrls: ['./viewer.component.scss']
 })
@@ -34,8 +34,8 @@ export class ViewerComponent implements AfterViewInit, OnDestroy {
 
   ngOnDestroy(){
     // this.viewer.teardown()
-    this.viewer.finish()
-    Autodesk.Viewing.shutdown()
+    // this.viewer.finish()
+    // Autodesk.Viewing.shutdown()
     // this.viewer = null
   }
 

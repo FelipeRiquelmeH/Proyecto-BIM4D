@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Tarea } from '../models/tarea';
 import { TreeNode } from '../models/treeNode';
 import { RecursoService } from '../services/recurso.service';
-import { Test } from '../test'
+import { faClipboardList} from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-task-manager',
@@ -19,10 +19,17 @@ export class TaskManagerComponent implements OnInit {
   selected: TreeNode | null
   multSelected : TreeNode[]
 
+  readonly clipboardList = faClipboardList
+
   constructor(private recursoService: RecursoService) { }
 
-  ngOnInit(): void {
-    this.tareas = this.recursoService.getPlanificacion()
+  async ngOnInit(): Promise<void> {
+    this.tareas = this.recursoService.getPlanificacionTest()
+    let test = this.recursoService.getPlanificacion().subscribe(res => {
+      console.log(res)
+    })
+
+    console.log(test)
   }
 
   public completarTarea(){

@@ -126,8 +126,4 @@ export class ForgeService {
 
     return this.http.get(url,{headers: headers}).toPromise()
   }
-
-    // uploadRevit(bucketKey: string, token: string){
-    //   let url = 'https://developer.api.autodesk.com/oss/v2/buckets/' + bucketKey +'/objects/' + OBJECT_KEY_4_REVIT_FILE
-    // }
 }
