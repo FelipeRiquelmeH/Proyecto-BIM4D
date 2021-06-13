@@ -1,6 +1,11 @@
 const express = require('express');
 const router = express.Router();
 
+router.get('/', (req, res) => {
+    console.log('Jo')
+    res.json('Hello World')}
+    )
+
 //Forge API Controllers
 const forgeOAuthController = require('../controllers/forge-api/oauth')
 const forgeBucketController = require('../controllers/forge-api/bucket')
@@ -13,7 +18,7 @@ const bimController = require('../controllers/bim-api/bim')
 /**
  * Forge API calls
  */
-router.post('/forge/authenticate',forgeOAuthController.authenticate)
+router.get('/forge/authenticate',forgeOAuthController.authenticate)
 router.get('/forge/buckets/get', forgeBucketController.getBuckets)
 router.post('/forge/buckets/create', forgeBucketController.createBucket)
 router.get('/forge/objects/get', forgeObjectController.getObjects)
@@ -26,9 +31,11 @@ router.get('/forge',forgeOAuthController.test)
  * BIM module API calls
  */
 router.get('/planificacion/get',planificacionController.getPlanificacion)
+// router.get('/planificacion/complete', planificacionController.completarTarea)
 // router.post('/planificacion/update',planificacionController.updatePlanificacion)
-// router.get('/bim/getModel',bimController.getBIM)
-// router.get('/bim/getRelations', bimController.getObjectRelations)
-// router.post('/bim/updateRelations',bimController.updateObjectRelations)
+router.post('/bim/create', bimController.createRelation)
+router.get('/bim/get', bimController.getObjectRelations)
+router.post('/bim/update', bimController.updateObjectRelations)
+router.post('bim/delete', bimController.deleteRelation)
 
 module.exports = router
