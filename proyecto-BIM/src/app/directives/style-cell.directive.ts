@@ -11,6 +11,11 @@ export class StyleCellDirective implements OnInit {
     private renderer: Renderer2
   ) { }
   ngOnInit(): void {
+    this.renderer.setStyle(
+      this.elementRef.nativeElement,
+      'text-align',
+      'center',
+    )
     if(this.fcStyleCell){
       if(this.fcStyleCell === undefined){
         this.renderer.setStyle(
@@ -26,11 +31,11 @@ export class StyleCellDirective implements OnInit {
       }
 
       // if (/^\d+$/.test(this.fcStyleCell)) {
-      //   this.renderer.setStyle(
-      //     this.elementRef.nativeElement,
-      //     'text-align',
-      //     'center',
-      //   )
+        // this.renderer.setStyle(
+        //   this.elementRef.nativeElement,
+        //   'text-align',
+        //   'center',
+        // )
       // }
 
       //Task Status Style

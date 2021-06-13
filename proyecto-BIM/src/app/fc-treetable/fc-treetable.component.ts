@@ -19,7 +19,6 @@ export interface ActionEvent{
 export class FcTreetableComponent implements OnChanges {
   @Input() values: any[]
   @Input() settings: ColumnSetting[]
-  @Input() caption: string = 'My Table'
   @Input() pagination: boolean
   @Input() scroll: boolean = false;
 
@@ -27,6 +26,9 @@ export class FcTreetableComponent implements OnChanges {
 
   readonly angleRight = faAngleRight
   readonly angleDown = faAngleDown
+
+  public multiple: boolean = false
+  private selected: TreeNode[] = []
 
   private treeTable: any[]
   flatTable: any[] = []
@@ -37,7 +39,7 @@ export class FcTreetableComponent implements OnChanges {
     this.pagination = false
   }
 
-  ngOnChanges(){
+  ngOnChanges(changes){
     if(this.values){
       this.treeTable = this.createTree(this.formatData(this.values),null)
 
@@ -97,17 +99,19 @@ export class FcTreetableComponent implements OnChanges {
     return formattedData
   }
 
-  private createTree(tableData: Tarea[], parent: string | null): any[] {
+  private createTree(tableData: Tarea[], parent: TreeNode | null): any[] {
     let dataArray: TreeNode[] = []
 
     for(let i = 0; i < tableData.length ; i++){
       let node: TreeNode = new TreeNode()
       if(parent){
-        node.parent = parent
+        node.parent = parent.data.id
         node.visible = false
+        node.level = parent.level + 1
       }
       else{
         node.visible = true
+        node.level = 0
       }
       let nodeData = {
         id: tableData[i].id,
@@ -125,7 +129,7 @@ export class FcTreetableComponent implements OnChanges {
       node.expandable = false
       if(tableData[i].subtareas.length){
         node.expandable = true
-        node.children = this.createTree(tableData[i].subtareas,node.data.id)
+        node.children = this.createTree(tableData[i].subtareas,node)
       }
 
       dataArray.push(node)
@@ -230,4 +234,37 @@ export class FcTreetableComponent implements OnChanges {
     }
   }
 
+  /**
+   * CHECKBOX METHODS
+   */
+  public checkBoxSelect(event){
+    let rowId = event.target.parentNode.parentNode.parentNode.id,
+        nodeData: TreeNode = this.searchById(rowId,this.flatTable)
+
+    let checkbox = (<HTMLInputElement> document.querySelector('#checkbox-' + rowId))
+    let index = this.selected.indexOf(nodeData)
+
+    if(this.selected.length < 8){
+      if(checkbox.checked){
+        this.selected.push(nodeData)
+      }else{
+        this.selected.splice(index,1)
+      }
+    }else{
+      window.alert('Solo puede seleccionar 8 tareas a la vez')
+      checkbox.checked = false
+    }
+
+    // if(nodeData.children!.length > 0){
+    //   for(let i = 0; i < nodeData.children!.length; i++){
+
+    //   }
+    //   (<HTMLInputElement> document.querySelector('#checkbox-' + rowId)).checked
+    // }
+
+  }
+
+  private addSelected(){
+
+  }
 }

@@ -1,9 +1,18 @@
+import { RecursoService } from "src/app/services/recurso.service"
+
 export class FourdplanToolbarExtension {
     private viewer
     private managerExtension
     private showTasks: boolean = false
     private showProgress: boolean = false
-    
+    //Variable hard-coded debido a que las planificaciones son manejadas por etapas en la empresa,
+    //la cual no esta presente en el alcance de este proyecto, por lo que se reemplaza por una
+    //etapa simuladada 1
+    private idetapa: number = 1 
+
+    public avances: number[] = []
+    public relaciones: number[] = []
+
     data = [
         4686,
         4668,
@@ -15,7 +24,7 @@ export class FourdplanToolbarExtension {
         4561
     ]
 
-    constructor(viewer, options){
+    constructor(viewer, options, private recursoService: RecursoService){
         this.viewer = viewer
 
         this.onToolbarCreated = this.onToolbarCreated.bind(this)
@@ -27,9 +36,23 @@ export class FourdplanToolbarExtension {
         this.viewer.setLightPreset(6)
         this.viewer.setEnvMapBackground(true)
 
+        this.getAvances(this.idetapa)
+
         console.log('Fourdplan Toolbar cargado')
 
         return true
+    }
+
+    async getAvances(idPlanificacion: number){
+        let data = await this.recursoService.getAvances(idPlanificacion)
+
+        for(let i = 0; i < data.length; i++){
+            let row = data[i]
+            if(row['estado'] == 1){
+                this.avances.push(row['idObjeto'])
+            }
+            this.relaciones.push(row['idObjeto'])
+        }
     }
 
     unload(){

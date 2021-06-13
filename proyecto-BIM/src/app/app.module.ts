@@ -13,6 +13,7 @@ import { StyleCellDirective } from './directives/style-cell.directive';
 import { FormatCellPipe } from './pipes/format-cell.pipe';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { BimViewerComponent } from './bim-viewer/bim-viewer.component';
+import { ToastrModule } from 'ngx-toastr';
 
 @NgModule({
   declarations: [
@@ -30,9 +31,10 @@ import { BimViewerComponent } from './bim-viewer/bim-viewer.component';
     BrowserAnimationsModule,
     MatTabsModule,
     FontAwesomeModule,
-    HttpClientModule
+    HttpClientModule,
+    ToastrModule.forRoot()
   ],
-  providers: [],
+  providers: [ ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

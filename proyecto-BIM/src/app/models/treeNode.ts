@@ -6,6 +6,7 @@ export class TreeNode<T = any>{
     expandable?: boolean
     visible?: boolean
     selectable?: boolean
+    level: number
     expandedIcon?: any
     collapsedIcon?: any
 }

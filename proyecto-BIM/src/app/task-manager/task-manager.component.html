@@ -3,13 +3,12 @@
         <h2 id="tableName"><fa-icon [icon]="clipboardList"></fa-icon> Lista de tareas</h2>
         <div id="contenidoTab" class="x-card-body collapse show">
             <fc-treetable 
-                [caption]="'Lista de Tareas'"
                 [values]="tareas"
                 [scroll]="true"
                 (notify)="onNotify($event)">
             </fc-treetable>
     
-    
+            <!-- MODAL -->
             <div *ngIf="triggerModal" id="myModal" class="modal">
                 <div class="modal-content">
                     <span class="close-button topright" (click)="triggerModal = false">&times;</span>
@@ -30,7 +29,7 @@
                                     <form class="form-inline">
                                         <div class="form-group">
                                             <div class="input-group">
-                                                <p>Aca va un datepicker</p>
+                                                <input type="date" id="finReal">
                                             </div>
                                         </div>
                                     </form>
@@ -55,6 +54,15 @@
                         </div>
                     </ng-container>
                 </div>
+            </div>
+
+            <!-- LOADING ANIMATION -->
+            <!-- <div ¨ngIf="loading" id="loader"></div> -->
+
+            <!-- ALERT -->
+            <div *ngIf="alert" class="alert" id="alert">
+                <span class="closeBtn" (click)="clearAlert()">&times;</span>
+                {{alertMessage}}
             </div>
         </div>
     </div>

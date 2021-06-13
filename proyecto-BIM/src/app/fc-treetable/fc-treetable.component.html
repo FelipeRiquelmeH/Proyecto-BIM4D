@@ -1,10 +1,22 @@
 <table id="myTable" class="table table-responsive styled-table" [ngClass]="{ 'scrollable': scroll }">
-    <caption>{{caption}}</caption>
     <ng-template *ngIf="values; then fcTable; else fcEmpty"></ng-template>
     <ng-template #fcTable>
         <thead>
             <tr>
-                <th class="row-header"></th> <!--- Columna vacia para flecha que expande los nodos -->
+                <!-- Switch de seleccion multiple -->
+                <th>
+                    <!-- Switch se encuentra escondido debido a restricciones de tiempo para
+                    implementar seleccion multiple de tareas -->
+                    <label class="switch" style="visibility: hidden;">
+                        <input type="checkbox" (change)="multiple = !multiple">
+                        Toggle Multiple
+                        <span class="slider round"></span>
+                      </label>
+                </th>
+                <th>
+                    <!-- Boton para completar multiples tareas -->
+                    <button [style.visibility]="!multiple ? 'hidden' : 'visible'">Completar</button>
+                </th>
                 <th class="row-header" *ngFor="let map of columnMaps">{{ map.header }}</th>
                 <th class="action-header"> Acciones </th>
             </tr>
@@ -18,7 +30,11 @@
                             'parent': value.expandable,
                             'child': value.expandable && value.parent
                         }">
-                        <button *ngIf="value.expandable" id="angleButton" [disabled]="!value.expandable" (click)="expandOrContract($event)">
+                        <label class="container" *ngIf="multiple && value.parent">
+                            <input type="checkbox" (change)="checkBoxSelect($event)" id="checkbox-{{value.data.id}}">
+                            <span class="checkmark"></span>
+                        </label>
+                        <button [style.--depth]="value.level" *ngIf="value.expandable" id="angleButton" [disabled]="!value.expandable" (click)="expandOrContract($event)">
                             <fa-icon *ngIf="!value.expanded" [icon]="angleRight"></fa-icon>
                             <fa-icon *ngIf="value.expanded" [icon]="angleDown"></fa-icon>
                         </button>
@@ -56,7 +72,9 @@
         </tbody>
     </ng-template>
     <ng-template #fcEmpty>
-        No hay datos disponibles para cargar
+        <div style="text-align: center;">
+            <h3>No hay datos disponibles para cargar</h3>
+        </div>
     </ng-template>
 </table>
 
