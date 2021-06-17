@@ -5,7 +5,9 @@ const queries = require('./db/queryList')
 module.exports = {
     async getObjectRelations(req, res){
         try{
-            const query = await db.query('')
+            const idPlanificacion = req.body.idPlanificacion
+            const query = await db.query(queries.obtenerAvances, [idPlanificacion])
+
             res.send(query.rows)
             return 200
         }catch(err){

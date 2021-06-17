@@ -30,12 +30,15 @@ router.get('/forge',forgeOAuthController.test)
 /**
  * BIM module API calls
  */
-router.get('/planificacion/get',planificacionController.getPlanificacion)
-// router.get('/planificacion/complete', planificacionController.completarTarea)
-// router.post('/planificacion/update',planificacionController.updatePlanificacion)
+//Planificacion calls
+router.post('/planificacion/get',planificacionController.getPlanificacion)
+router.post('/planificacion/update', planificacionController.actualizarTarea)
+router.post('/planificacion/undoMult', planificacionController.deshacerTareas)
+router.post('/planificacion/undo',planificacionController.deshacerTarea)
+//BIM calls
+router.post('/bim/get', bimController.getObjectRelations)
 router.post('/bim/create', bimController.createRelation)
-router.get('/bim/get', bimController.getObjectRelations)
 router.post('/bim/update', bimController.updateObjectRelations)
-router.post('bim/delete', bimController.deleteRelation)
+router.post('/bim/delete', bimController.deleteRelation)
 
 module.exports = router
