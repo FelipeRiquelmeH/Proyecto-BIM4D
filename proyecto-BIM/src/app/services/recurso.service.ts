@@ -10,37 +10,48 @@ export class RecursoService {
 
   constructor(private http: HttpClient) { }
 
-  getPlanificacionTest(){
-    // return this.http.get('')
-    return new Test().data
-  }
-
-  async getPlanificacion(){
-    const response = await this.http.get<any>(`${environment.apiUrl}/api/planificacion/get`).toPromise()
+  async getPlanificacion(idPlanificacion: number){
+    const body = {"idPlanificacion": idPlanificacion}
+    const response = await this.http.post<any>(`${environment.apiUrl}/api/planificacion/get`, body).toPromise()
     
-    return response
+    return response[0]
   }
 
-  async completarTarea(datosTarea: any){
-    const result = await this.http.post<any>(`${environment.apiUrl}/api/planificacion/complete`,datosTarea).toPromise()
-
-    return result
-  }
-
-  async editarTarea(datosTarea: any){
+  async actualizarTarea(datosTarea: any){
     const result = await this.http.post<any>(`${environment.apiUrl}/api/planificacion/update`,datosTarea).toPromise()
 
     return result
   }
 
-  async deshacerTarea(datosTarea: any){
-    const result = await this.http.post<any>(`${environment.apiUrl}/api/planificacion/delete`,datosTarea).toPromise()
+  async deshacerTarea(idTarea: number | number[] ){
+    let result
+    if(Array.isArray(idTarea)){
+      const body = {"idTareas": idTarea}
+      result = await this.http.post<any>(`${environment.apiUrl}/api/planificacion/undoMult`,body).toPromise()
+    }else{
+      const body = {"idTarea": idTarea}
+      result = await this.http.post<any>(`${environment.apiUrl}/api/planificacion/undo`,body).toPromise()
+    }
 
     return result
   }
 
   async getAvances(idPlanificacion: number){
-    const result = await this.http.post<any>(`${environment.apiUrl}/api/bim/get`,idPlanificacion).toPromise()
+    const body = {"idPlanificacion": idPlanificacion}
+    const result = await this.http.post<any>(`${environment.apiUrl}/api/bim/get`,body).toPromise()
+
+    return result
+  }
+
+  async crearAvance(datosAvance: any){
+    const response = await this.http.post<any>(`${environment.apiUrl}/api/bim/create`,datosAvance).toPromise()
+
+    return response
+  }
+
+  async eliminarAvance(idAvance: number){
+    const body = {"idAvance": idAvance}
+    const result = await this.http.post<any>(`${environment.apiUrl}/api/bim/delete`,body).toPromise()
 
     return result
   }

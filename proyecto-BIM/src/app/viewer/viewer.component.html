@@ -12,12 +12,19 @@
         </div>
         <div class="column" id="infoSec" style="height: 100%;">
             <div id="secTitle">
-                <p>Seccion de informacion</p>
+                <p>Resumen de Tareas</p>
+                <div style="display: flex; justify-content: space-between;" >
+                    <p>Tarea a elegir</p>
+                    <select id="tareasSelect">
+                        <option *ngFor="let tarea of tareas" value="{{tarea.id}}">{{tarea.id}}. {{tarea.nombre}}</option>
+                    </select>
+                </div>
             </div>
             <div id="secBody">
-                <button> Mostrar Tareas asociadas </button>
+                <infotable [values]="tareas"></infotable>
             </div>
-    
+        </div>
+        <div id="hiddenDiv" data-objectid="" data-avanceid="" data-changetype="clear" (domChange)="onDataChange($event)">
         </div>
     </div>
 </body>

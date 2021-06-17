@@ -1,0 +1,15 @@
+<table class="styled-table scrollable">
+	<thead>
+		<tr>
+			<th class="row-header" *ngFor="let map of columnMaps">{{ map.header }}</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr *ngFor="let value of values">
+			<td class="row-data" *ngFor="let map of columnMaps" id="{{value.id}}"
+            [fcStyleCell]="value[map.access(value)]">
+                {{ value[map.access(value)] }}
+            </td>
+		</tr>
+	</tbody>
+</table>

@@ -1,5 +1,5 @@
 export class TreeNode<T = any>{
-    parent?: string | null
+    parent?: TreeNode<T> | null
     data?: T
     children?: TreeNode<T>[]
     expanded?: boolean

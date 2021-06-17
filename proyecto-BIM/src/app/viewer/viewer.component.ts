@@ -1,20 +1,65 @@
-import { AfterViewInit, Component, OnDestroy } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { ForgeService } from '../services/forge.service';
 import { ProgressManagerExtension } from './extensions/progressManager';
 import { FourdplanToolbarExtension } from './extensions/fourdplanToolbar';
+import { RecursoService } from '../services/recurso.service';
 
 declare const Autodesk: any
+
+export interface Resumen{
+  id: string
+  nombre: string
+  estado: string
+  nivel: number
+  padre: string
+}
 
 @Component({
   selector: 'fdp-viewer',
   templateUrl: './viewer.component.html',
   styleUrls: ['./viewer.component.scss']
 })
-export class ViewerComponent implements AfterViewInit, OnDestroy {
+export class ViewerComponent implements OnInit, AfterViewInit, OnDestroy {
   public viewer: any
   private project: string = 'fourdplan'
+  private idPlanificacion = 2
+  private avances: any[]
+  public tareas: any[]
 
-  constructor(private forgeService: ForgeService){ 
+  private loaded: boolean = false
+  private fdPExtension: any
+
+  constructor(private forgeService: ForgeService, private recursoService: RecursoService){ 
+  }
+
+  async ngOnInit(): Promise<void> {
+    this.updateAvances(this.idPlanificacion)
+    const res = await this.recursoService.getPlanificacion(this.idPlanificacion)
+    let formatArray: Resumen[] = []
+    this.formatTareas(formatArray,res['tareas'], 0)
+    this.tareas = formatArray
+  }
+
+  formatTareas(array: Resumen[], tareas: any[], depth: number, parent: string = ''){
+    for(let i = 0; i < tareas.length; i++){
+      let resum = <Resumen> new Object()
+      resum.id = tareas[i]['id']
+      resum.nombre = tareas[i]['nombre']
+      resum.nivel = depth;
+      resum.padre = parent ? 'Tarea ' + parent: ''
+      resum.estado = tareas[i]['estado'] == 1 ? 'Completa': 'Pendiente'
+      array.push(resum)
+      if(tareas[i]['subtareas'].length > 0){
+        this.formatTareas(array, tareas[i]['subtareas'], depth + 1, resum.id)
+      }
+    }
+  }
+
+  async updateAvances(idPlanificacion: number){
+    this.avances = await this.recursoService.getAvances(idPlanificacion)
+    if(this.loaded){
+      this.fdPExtension.cargarAvances(this.avances)
+    }
   }
 
   async ngAfterViewInit(): Promise<void> {
@@ -139,12 +184,54 @@ export class ViewerComponent implements AfterViewInit, OnDestroy {
       var instance = new CustomEvent("viewerinstance", {detail: {viewer: viewer}})
       document.dispatchEvent(instance)
     })
-    // viewer.addEventListener( Autodesk.Viewing.GEOMETRY_LOADED_EVENT, () => {
-    //   this.viewer.setThemingColor(4686, new THREE.Vector4( 255 / 255, 0, 0, 1))
-    // })
+    viewer.addEventListener( Autodesk.Viewing.GEOMETRY_LOADED_EVENT, () => {
+      this.fdPExtension = this.viewer.getExtension('FourdplanToolbarExtension')
+      this.loaded = true
+      this.fdPExtension.cargarAvances(this.avances)
+    })
   }
 
   onDocumentLoadFailure(viewerErrorCode: any){
     console.error('onDocumentLoadFailure() - errorCode:' + viewerErrorCode)
   }
+
+  onDataChange(event){
+    let div = <HTMLElement> document.querySelector('#hiddenDiv')
+    if(div.dataset.changetype != 'clear'){
+      if(div.dataset.avanceid && div.dataset.avanceid != ''){
+        let idAvance = div.dataset.avanceid
+        div.dataset.changetype = "clear"
+        div.dataset.avanceid = ""
+        this.eliminarAvance(parseInt(idAvance))
+      }else if(div.dataset.objectid && div.dataset.objectid){
+        let select = <HTMLSelectElement> document.querySelector('#tareasSelect')
+        console.log(select.value)
+        if(select){
+          let dataAvance = {
+            idTarea: parseInt(select.value),
+            idObjeto: parseInt(div.dataset.objectid)
+          }
+          div.dataset.changetype = "clear"
+          div.dataset.objectid = ""
+          this.crearAvance(dataAvance)
+        }
+      }
+    }
+  }
+
+  private async crearAvance(datosAvance: any){
+    const response = await this.recursoService.crearAvance(datosAvance)
+
+    if(response){
+      this.updateAvances(this.idPlanificacion)
+    }
+  }
+
+  private async eliminarAvance(idAvance: number){
+    const response = await this.recursoService.eliminarAvance(idAvance)
+    if(response){
+      this.updateAvances(this.idPlanificacion)
+    }
+  }
+
 }

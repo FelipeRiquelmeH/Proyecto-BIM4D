@@ -14,6 +14,9 @@ import { FormatCellPipe } from './pipes/format-cell.pipe';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { BimViewerComponent } from './bim-viewer/bim-viewer.component';
 import { ToastrModule } from 'ngx-toastr';
+import { RecursoService } from './services/recurso.service';
+import { DomChangeDirective } from './directives/dom-change.directive';
+import { InfotableComponent } from './viewer/infotable/infotable.component';
 
 @NgModule({
   declarations: [
@@ -24,6 +27,8 @@ import { ToastrModule } from 'ngx-toastr';
     StyleCellDirective,
     FormatCellPipe,
     BimViewerComponent,
+    DomChangeDirective,
+    InfotableComponent,
   ],
   imports: [
     BrowserModule,
@@ -34,7 +39,9 @@ import { ToastrModule } from 'ngx-toastr';
     HttpClientModule,
     ToastrModule.forRoot()
   ],
-  providers: [ ],
+  providers: [
+    RecursoService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

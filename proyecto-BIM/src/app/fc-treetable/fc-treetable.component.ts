@@ -105,7 +105,7 @@ export class FcTreetableComponent implements OnChanges {
     for(let i = 0; i < tableData.length ; i++){
       let node: TreeNode = new TreeNode()
       if(parent){
-        node.parent = parent.data.id
+        node.parent = parent
         node.visible = false
         node.level = parent.level + 1
       }
