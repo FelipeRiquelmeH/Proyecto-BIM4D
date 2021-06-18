@@ -1,28 +1,12 @@
-import { EventEmitter } from "@angular/core"
-import { Output } from "@angular/core"
-
 export class FourdplanToolbarExtension {
     private viewer
     private managerExtension
     private showTasks: boolean = false
     private showProgress: boolean = false
 
-    // @Output() test:EventEmitter<any> = new EventEmitter()
-
     public lista: any[] = []
     public avances: any[] = []
     public relaciones: any[] = []
-
-    data = [
-        4686,
-        4668,
-        2457,
-        2591,
-        4556,
-        4559,
-        4563,
-        4561
-    ]
 
     constructor(viewer, options){
         this.viewer = viewer

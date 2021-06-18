@@ -5,6 +5,8 @@ import { RecursoService } from '../services/recurso.service';
 import { faClipboardList} from '@fortawesome/free-solid-svg-icons';
 import { ToastrService } from 'ngx-toastr';
 import * as moment from 'moment';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { filter } from 'rxjs/operators'
 
 moment.locale('es')
 
@@ -17,6 +19,8 @@ moment.locale('es')
 export class TaskManagerComponent implements OnInit {
   tareas: Tarea[]
   
+  private idPlanificacion = 1
+  public defaultDate = moment().format('DD-MM-YYYY')
   public loading: boolean = false
   public triggerModal: boolean = false
   public modalType: string = ''
@@ -31,12 +35,23 @@ export class TaskManagerComponent implements OnInit {
 
   constructor(
     private recursoService: RecursoService,
-    private toastr: ToastrService  
+    private toastr: ToastrService,
+    private router: Router,
+    private activatedRoute: ActivatedRoute
   ) { }
 
   async ngOnInit(): Promise<void> {
-    let planificacion = await this.recursoService.getPlanificacion(2)
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd)
+  ).subscribe(() => {
+      if(this.activatedRoute.root){
+        window.location.reload()
+      }
+  });
+
+    let planificacion = await this.recursoService.getPlanificacion(this.idPlanificacion)
     this.tareas = this.formatJSON(planificacion["tareas"])
+    console.log(this.defaultDate)
   }
 
   private formatJSON(array: any[]): Tarea[]{
@@ -220,7 +235,7 @@ export class TaskManagerComponent implements OnInit {
           return
         }
 
-        let fecha = <HTMLInputElement> document.querySelector('#finReal' + subt[i]!.data!.id)
+        let fecha = <HTMLInputElement> document.querySelector('#finReal-' + subt[i]!.data!.id)
         let data = {
           idTarea: subt[i]!.data!.id,
           finReal: fecha.value

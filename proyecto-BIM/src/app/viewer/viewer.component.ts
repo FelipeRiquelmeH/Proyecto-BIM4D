@@ -3,6 +3,8 @@ import { ForgeService } from '../services/forge.service';
 import { ProgressManagerExtension } from './extensions/progressManager';
 import { FourdplanToolbarExtension } from './extensions/fourdplanToolbar';
 import { RecursoService } from '../services/recurso.service';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { filter } from 'rxjs/operators';
 
 declare const Autodesk: any
 
@@ -22,17 +24,28 @@ export interface Resumen{
 export class ViewerComponent implements OnInit, AfterViewInit, OnDestroy {
   public viewer: any
   private project: string = 'fourdplan'
-  private idPlanificacion = 2
+  private idPlanificacion = 1
   private avances: any[]
   public tareas: any[]
 
   private loaded: boolean = false
   private fdPExtension: any
 
-  constructor(private forgeService: ForgeService, private recursoService: RecursoService){ 
-  }
+  constructor(
+    private forgeService: ForgeService, 
+    private recursoService: RecursoService,
+    private router: Router,
+    private activatedRoute: ActivatedRoute
+    ){ }
 
   async ngOnInit(): Promise<void> {
+    this.router.events.pipe(
+        filter(event => event instanceof NavigationEnd)
+    ).subscribe(() => {
+        if(this.activatedRoute.root){
+          window.location.reload()
+        }
+    });
     this.updateAvances(this.idPlanificacion)
     const res = await this.recursoService.getPlanificacion(this.idPlanificacion)
     let formatArray: Resumen[] = []
@@ -63,18 +76,18 @@ export class ViewerComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   async ngAfterViewInit(): Promise<void> {
-    document.addEventListener('DOMContentLoaded', async () => {
-      let cliId = '8bqK6hofASylpd1YSBkUbveFGJlAPgg1'
-      let cliSecret = 'fdHMGRDKZsJjzJ9J'
-      let res = await this.forgeService.getAccessToken(cliId, cliSecret)
-        
-      let bucketKey = await this.searchBucket(res.access_token, res.token_type, cliId.toLowerCase() + '-' + this.project)
-      let object = await this.searchObjects(res.access_token, res.token_type, bucketKey)
-      let model = await this.loadModel(res.access_token,object['objectId'],object['objectKey'])
-      if(model['status'] == 'success' && (model['progress'] == 'success' || model['progress'] == 'complete')){
-        this.launchViewer(res.access_token, model['urn'])
-      }
-    })
+      document.addEventListener('DOMContentLoaded', async () => {
+        let cliId = '8bqK6hofASylpd1YSBkUbveFGJlAPgg1'
+        let cliSecret = 'fdHMGRDKZsJjzJ9J'
+        let res = await this.forgeService.getAccessToken(cliId, cliSecret)
+          
+        let bucketKey = await this.searchBucket(res.access_token, res.token_type, cliId.toLowerCase() + '-' + this.project)
+        let object = await this.searchObjects(res.access_token, res.token_type, bucketKey)
+        let model = await this.loadModel(res.access_token,object['objectId'],object['objectKey'])
+        if(model['status'] == 'success' && (model['progress'] == 'success' || model['progress'] == 'complete')){
+          this.launchViewer(res.access_token, model['urn'])
+        }
+      })
   }
 
   ngOnDestroy(){

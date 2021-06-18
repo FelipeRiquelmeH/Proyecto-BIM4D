@@ -27,13 +27,9 @@
                                         <b>Estado de la Tarea:</b> {{selected!.data.estado}}<br>
                                     </div>
                                     <div>
-                                        <form class="form-inline">
-                                            <div class="form-group">
-                                                <div class="input-group">
-                                                    <input type="date" id="finReal">
-                                                </div>
-                                            </div>
-                                        </form>
+                                        <div class="input-group">
+                                            <input type="date" id="finReal" value="defaultDate">
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -51,19 +47,45 @@
                     </ng-container>
                     <ng-container *ngIf="modalType == 'multiple'">
                         <span class="close">&times;</span>
-                        <div class="modal-header">
-                            <ng-container *ngIf="actionMode == 'delete'">
-                                <div id="taskHeader" class="modal-header">
-                                    <h2><strong>Esta seguro de querer deshacer la tarea {{selected!.data.id}}: "{{selected!.data.nombre}}" y sus subtareas ?</strong></h2>
+                        <ng-container>
+                            <div class="modal-header">
+                                <h2><strong>Multiples tareas seleccionadas</strong></h2>
+                            </div>
+                            <div class="modal-body">
+                                <div>
+                                    <b>Fecha Inicio:</b> {{selected!.data.nombre}}<br>
+                                    <b>Fecha Inicio:</b> {{selected!.data.inicio}}<br>
+                                    <b>Fecha Fin:</b> {{selected!.data.fin}}<br>
+                                    <b>Fecha Completada:</b> {{selected!.data.completa}}<br>
+                                    <b>Estado de la Tarea:</b> {{selected!.data.estado}}<br>
+                                    <br>
                                 </div>
-                            </ng-container>
-                        </div>
-                        <div class="modal-body">
-                            
-                        </div>
-                        <div class="modal-footer">
-                            <button *ngIf="actionMode == 'delete'" id="deshacer" class="btn modal-btn" (click)="deshacerTarea()">Deshacer Tarea</button>
-                        </div>
+                                <div *ngFor="let child of selected!.children!" class="container">
+                                    <div>
+                                        <b>Tarea:</b> {{child!.data.nombre}}<br>
+                                        <b>Fecha Inicio:</b> {{child!.data.inicio}}<br>
+                                        <b>Fecha Fin:</b> {{child!.data.fin}}<br>
+                                        <b>Fecha Completada:</b> {{child!.data.completa}}<br>
+                                        <b>Estado de la Tarea:</b> {{child!.data.estado}}<br>
+                                        <br>
+                                    </div>
+                                    <div>
+                                        <div class="input-group">
+                                            <input type="date" id="finReal-{{child!.data.id}}" value="defaultDate">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button *ngIf="actionMode == 'fill'" id="completar" class="btn modal-btn" (click)="actualizarTarea()">Completar Tarea</button>
+                                <button *ngIf="actionMode == 'delete'" id="deshacer" class="btn modal-btn" (click)="deshacerTarea()">Deshacer Tarea</button>
+                            </div>
+                        </ng-container>
+                        <ng-container *ngIf="actionMode == 'delete'">
+                            <div id="taskHeader" class="modal-header">
+                                <h2><strong>Esta seguro de querer deshacer la tarea {{selected!.data.id}}: "{{selected!.data.nombre}}" y sus subtareas ?</strong></h2>
+                            </div>
+                        </ng-container>
                     </ng-container>
                 </div>
             </div>

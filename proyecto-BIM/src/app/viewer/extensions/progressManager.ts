@@ -82,12 +82,13 @@ export class ProgressManagerExtension {
     }
 
     assignTask(relations: any[]){
-        const defaultC = new THREE.Vector4( 255 / 255, 0, 0, 1);
+        const defaultC = new THREE.Vector4(0, 0, 0);
         for(let i = 0; i < relations.length; i++){
             let selSet = relations[i]['idObjeto']
             let colorArray = relations[i]['color']
             if(colorArray != null){
-                let color = new THREE.Vector4(colorArray[0], colorArray[1], colorArray[2], colorArray[3])
+                let x = colorArray[0]/255, y = colorArray[1]/255, z = colorArray[2]/255
+                let color = new THREE.Vector4(x,y,z)
                 this.viewer.setThemingColor( selSet, color)
             }else{
                 this.viewer.setThemingColor( selSet, defaultC)
