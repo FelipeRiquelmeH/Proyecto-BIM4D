@@ -247,3 +247,27 @@ input:checked + .slider:before {
 #angleButton > fa-icon{
     pointer-events: none;
 }
+
+/**
+*   ESTILOS CELDAS DE ESTADO
+*/
+.stClear{
+    background-color: #196d00;
+    color: white;
+}
+.stEarly{
+    background-color: #229b7e;
+    color: white;
+}
+.stPast{
+    background-color: #799400;
+    color: white;
+}
+.stPending{
+    background-color: #0083af;
+    color: white;
+}
+.stLate{
+    background-color: #8b1e00;
+    color: white;
+}

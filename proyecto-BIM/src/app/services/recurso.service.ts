@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Test } from '../test';
+import * as moment from 'moment';
 import { environment} from '../../environments/environment'
 
 @Injectable({
@@ -18,10 +18,25 @@ export class RecursoService {
   }
 
   async actualizarTarea(datosTarea: any){
-    const result = await this.http.post<any>(`${environment.apiUrl}/api/planificacion/update`,datosTarea).toPromise()
+    let result
+    if(datosTarea.length > 1){
+      let tareas = [], fechas = []
+      for(let i = 0; i < datosTarea.length; i++){
+        tareas.push(datosTarea[i]['idTarea'])
+        fechas.push(moment(datosTarea[i]['finReal']).format('YYYY-MM-DD'))
+      }
+      const body = {
+        tareas: tareas,
+        fechas: fechas
+      }
+      result = await this.http.post<any>(`${environment.apiUrl}/api/planificacion/updateMult`, body).toPromise()
+    }else{
+      result = await this.http.post<any>(`${environment.apiUrl}/api/planificacion/update`,datosTarea).toPromise()
+    }
 
     return result
   }
+  
 
   async deshacerTarea(idTarea: number | number[] ){
     let result

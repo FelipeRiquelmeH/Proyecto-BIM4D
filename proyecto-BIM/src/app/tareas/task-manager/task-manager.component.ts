@@ -1,7 +1,7 @@
 import { Component, Injectable, OnInit } from '@angular/core';
-import { Tarea } from '../models/tarea';
-import { TreeNode } from '../models/treeNode';
-import { RecursoService } from '../services/recurso.service';
+import { Tarea } from '../../models/tarea';
+import { TreeNode } from '../../models/treeNode';
+import { RecursoService } from '../../services/recurso.service';
 import { faClipboardList} from '@fortawesome/free-solid-svg-icons';
 import { ToastrService } from 'ngx-toastr';
 import * as moment from 'moment';
@@ -51,7 +51,6 @@ export class TaskManagerComponent implements OnInit {
 
     let planificacion = await this.recursoService.getPlanificacion(this.idPlanificacion)
     this.tareas = this.formatJSON(planificacion["tareas"])
-    console.log(this.defaultDate)
   }
 
   private formatJSON(array: any[]): Tarea[]{
@@ -94,13 +93,13 @@ export class TaskManagerComponent implements OnInit {
     return tareas
   }
 
-  private checkParentUndo(parent: TreeNode){
+  private checkParentUndo(parent: TreeNode, idChild: string){
     if(parent.data.completa == ''){
       return false
     }else{
       let allClear: boolean = true
       for(let i = 0; i < parent.children!.length; i++){
-        if(parent.children![i].data.completa == ''){
+        if(parent.children![i].data.completa == '' && parent.children![i].data.id != idChild){
           allClear = false
           break;
         }
@@ -119,7 +118,7 @@ export class TaskManagerComponent implements OnInit {
         break;
       }
       let diff = moment(lastDate,'LL').diff(moment(parent.children![i].data.completa, 'LL'))
-      if(diff > 0){
+      if(diff < 0){
         lastDate = parent.children![i].data.completa
       }
     }
@@ -130,7 +129,7 @@ export class TaskManagerComponent implements OnInit {
       }
     }
 
-    return [data]
+    return data
   }
 
   private async update(queryData: any, tareas: TreeNode[]){
@@ -140,41 +139,41 @@ export class TaskManagerComponent implements OnInit {
       for(let i = 0; i < response.length; i++){
         if(response[i]['status'] == 1){
           let data = tareas[i].data
-          let fin = moment(data.fechaFin), 
-              finReal = moment(queryData.finReal),
+          let fin = moment(data.fin, 'LL'), 
+              finReal = moment(queryData[i].finReal, 'LL'),
               diff = finReal.diff(fin)
-  
-          data.completa = finReal.format('LL')
+ 
+          data.completa = moment(queryData[i].finReal, 'YYYY-MM-DD').format('LL')
           
           if(diff == 0){
             data.estado = 'Completa'
-          }else if(diff < 0){
+          }else if(diff > 0){
             data.estado = 'Completa [Fuera de Plazo]'
           }else{
             data.estado = 'Completa [Adelantada]'
           }
   
-          this.toastr.success(response[i]['message'],'Tarea completada!')
+          // this.setAlert('Success',response[i]['message'])
+          // this.toastr.success(response[i]['message'],'Tarea completada!')
           this.triggerModal = false
           
           if(tareas[i].parent != null){
             let clearParent = this.checkParentUpdate(tareas[i].parent!)
-            console.log(clearParent)
             if(clearParent != null){
               let diff = moment(clearParent['finReal'],'YYYY-MM-DD').diff(moment(tareas[i].parent!.data.completa,'LL'))
               if(tareas[i].parent!.data.completa == '' || diff > 0){
-                this.update(clearParent,[tareas[i].parent!])
+                this.update([clearParent],[tareas[i].parent!])
               }
             }
           }
         }else{
           this.triggerModal = false
-          this.toastr.error(response[i]['message'], 'Error')
+          // this.toastr.error(response[i]['message'], 'Error')
         }
       }
     }else{
       this.triggerModal = false
-        this.toastr.error('No se pudo realizar la accion', 'Error')
+        // this.toastr.error('No se pudo realizar la accion', 'Error')
     } 
   }
 
@@ -189,23 +188,23 @@ export class TaskManagerComponent implements OnInit {
           data.completa = ''
           data.estado = 'Pendiente'
   
-          this.toastr.success(response[i]['message'],'Deshacer tarea exitoso!')
+          // this.toastr.success(response[i]['message'],'Deshacer tarea exitoso!')
           this.triggerModal = false
 
-          if(tarea[i].parent){
-            let undoParent = this.checkParentUndo(tarea[i].parent!)
+          if(tarea[i].parent != null){
+            let undoParent = this.checkParentUndo(tarea[i].parent!, tarea[i].data.id)
             if(undoParent){
               this.undo(tarea[i].parent!.data.id,[tarea[i].parent!])
             }
           }
         }else{
           this.triggerModal = false
-          this.toastr.error(response[i]['message'], 'Error')
+          // this.toastr.error(response[i]['message'], 'Error')
         }
       }
     }else{
       this.triggerModal = false
-      this.toastr.error('No se pudo realizar la accion', 'Error')
+      // this.toastr.error('No se pudo realizar la accion', 'Error')
     }
   }
 
@@ -225,23 +224,25 @@ export class TaskManagerComponent implements OnInit {
     //Si tiene subtareas
     }else{
       let dataSubt:any[] = []
-      let nodes = [this.selected!]
+      let nodes = []
       for(let i = 0; i < subt!.length; i++){
         //si la subtarea tiene mas subtareas no puede ser completada la accion
         if(subt[i]!.children?.length){
           this.triggerModal = false
-          this.toastr.error('Tarea seleccionada tiene muchas subtareas para completar! ' + 
-            'Tarea elegida solo puede tener un nivel de profundidad más!', 'Error')
+          // this.toastr.error('Tarea seleccionada tiene muchas subtareas para completar! ' + 
+          //   'Tarea elegida solo puede tener un nivel de profundidad más!', 'Error')
           return
         }
 
         let fecha = <HTMLInputElement> document.querySelector('#finReal-' + subt[i]!.data!.id)
-        let data = {
-          idTarea: subt[i]!.data!.id,
-          finReal: fecha.value
+        if(fecha && fecha.value != ""){
+          let data = {
+            idTarea: subt[i]!.data!.id,
+            finReal: fecha.value
+          }
+          dataSubt.push(data)
+          nodes.push(subt[i])
         }
-        nodes.push(subt[i])
-        dataSubt.push(data)
       }
       this.update(dataSubt,nodes)
     }
@@ -255,39 +256,46 @@ export class TaskManagerComponent implements OnInit {
       this.undo(id, tareas)
       
     }else{
-      let idSubt: number[] = [this.selected!.data!.id]
+      let idSubt: number[] = []
       for(let i = 0; i < subt!.length; i++){
-        if(subt[i]!.children?.length){
+        if(subt[i]!.children?.length > 0){
           this.triggerModal = false
-          this.toastr.error('Tarea seleccionada tiene muchas subtareas para deshacer! ' + 
-            'Tarea elegida solo puede tener un nivel de profundidad más!', 'Error')
+          // this.toastr.error('Tarea seleccionada tiene muchas subtareas para deshacer! ' + 
+          //   'Tarea elegida solo puede tener un nivel de profundidad más!', 'Error')
           return
         }
-        idSubt.push(subt[i]!.data!.id)
+        if(subt[i]!.data.estado != 'Pendiente'){
+          idSubt.push(subt[i]!.data!.id)
+        }
       }
       this.undo(idSubt,subt)
     }
   }
 
   private setAlert(type: string, message: string){
+    console.log(alert)
     if(message){
+      this.alertMessage = message
+      this.alert = true
+      let alert = <HTMLElement> document.querySelector('#alert')
       switch(type){
         case 'Success':{
-  
+          alert.classList.add('alertSuccess')
           break;
         }
         case 'Error': {
+          alert.classList.add('alertError')
           break;
         }
         case 'Warning': {
+          alert.classList.add('alertWarn')
           break;
         }
         default: {
+          alert.classList.add('alertInfo')
           break;
         }
       }
-      this.alertMessage = message
-      this.alert = true
     }
   }
 

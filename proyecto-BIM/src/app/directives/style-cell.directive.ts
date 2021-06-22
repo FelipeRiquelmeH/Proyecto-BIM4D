@@ -37,66 +37,6 @@ export class StyleCellDirective implements OnInit {
         //   'center',
         // )
       // }
-
-      //Task Status Style
-      switch(this.fcStyleCell){
-        case 'Completa':{
-          this.renderer.setStyle(
-            this.elementRef.nativeElement,
-            'background-color',
-            '#196d00',
-          )
-          this.renderer.setStyle(
-            this.elementRef.nativeElement,
-            'color',
-            'white',
-          )
-          break;
-        }
-        case 'Completa [Fuera de Plazo]':{
-          this.renderer.setStyle(
-            this.elementRef.nativeElement,
-            'background-color',
-            '#799400',
-          )
-          this.renderer.setStyle(
-            this.elementRef.nativeElement,
-            'color',
-            'white',
-          )
-          break;
-        }
-        case 'Atrasada':{
-          this.renderer.setStyle(
-            this.elementRef.nativeElement,
-            'background-color',
-            '#8b1e00',
-          )
-          this.renderer.setStyle(
-            this.elementRef.nativeElement,
-            'color',
-            'white',
-          )
-          break;
-        }
-        case 'Pendiente':{
-          this.renderer.setStyle(
-            this.elementRef.nativeElement,
-            'background-color',
-            '#0083af',
-          )
-          this.renderer.setStyle(
-            this.elementRef.nativeElement,
-            'color',
-            'white',
-          )
-          break;
-        }
-        default:{
-          break;
-        }
-      }
-
     }
   }
 

@@ -55,6 +55,11 @@
     border-top-width: 2px;
 }
 
+#multipleChild{
+    overflow-y: scroll;
+    max-height: 200px;
+}
+
 .modal-footer {
     color: #868e96;
     padding: 8px 8px;
@@ -112,7 +117,9 @@
 }
 
 #cancelar{
-    background-color: rgb(216, 115, 115);
+    background-color: #ff5252;
+    color: #ffffff;
+    cursor: pointer;
 }
 
 #taskHeader > *{
@@ -198,11 +205,24 @@
     position: relative;
     z-index: 1;
     padding: 20px;
-    background-color: #f44336;
+    // background-color: #f44336;
     color: white;
     opacity: 1;
     transition: opacity 0.6s;
     margin-bottom: 15px;
+}
+
+.alertSuccess{
+    background-color: #19c552;
+}
+.alertError{
+    background-color: #f44336;
+}
+.alertWarn{
+    background-color: #f4e136;
+}
+.alertInfo{
+    background-color: #3678f4;
 }
 
 .closebtn {
@@ -213,7 +233,7 @@
     font-size: 22px;
     line-height: 20px;
     cursor: pointer;
-    transition: 0.3s;
+    transition: opacity 0.3s;
 }
 .closebtn:hover {
     cursor: pointer;

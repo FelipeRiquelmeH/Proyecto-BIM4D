@@ -1,6 +1,11 @@
 <body>
     <div id="content">
         <h2 id="tableName"><fa-icon [icon]="clipboardList"></fa-icon> Lista de tareas</h2>
+        <!-- ALERT -->
+        <!-- <div *ngIf="alert" class="alert" id="alert">
+            <span class="closeBtn" (click)="clearAlert()">&times;</span>
+            {{alertMessage}}
+        </div> -->
         <div id="contenidoTab" class="x-card-body collapse show">
             <fc-treetable 
                 [values]="tareas"
@@ -27,7 +32,8 @@
                                         <b>Estado de la Tarea:</b> {{selected!.data.estado}}<br>
                                     </div>
                                     <div>
-                                        <div class="input-group">
+                                        <div class="input-group" style="display: flex; flex-direction: column;">
+                                            <p>Seleccione la fecha en que la tarea fue completada</p>
                                             <input type="date" id="finReal" value="defaultDate">
                                         </div>
                                     </div>
@@ -42,12 +48,12 @@
                         <div class="modal-footer">
                             <button *ngIf="actionMode == 'fill'" id="completar" class="btn modal-btn" (click)="actualizarTarea()">Completar Tarea</button>
                             <button *ngIf="actionMode == 'edit'" id="editar" class="btn modal-btn" (click)="actualizarTarea()">Editar Tarea</button>
-                            <button *ngIf="actionMode == 'delete'" id="deshacer" class="btn modal-btn" (click)="deshacerTarea()">Deshacer Tarea</button>
+                            <button *ngIf="actionMode == 'delete'" id="cancelar" class="btn modal-btn" (click)="deshacerTarea()">Deshacer Tarea</button>
                         </div>
                     </ng-container>
                     <ng-container *ngIf="modalType == 'multiple'">
                         <span class="close">&times;</span>
-                        <ng-container>
+                        <ng-container *ngIf="actionMode != 'delete'">
                             <div class="modal-header">
                                 <h2><strong>Multiples tareas seleccionadas</strong></h2>
                             </div>
@@ -56,34 +62,43 @@
                                     <b>Fecha Inicio:</b> {{selected!.data.nombre}}<br>
                                     <b>Fecha Inicio:</b> {{selected!.data.inicio}}<br>
                                     <b>Fecha Fin:</b> {{selected!.data.fin}}<br>
-                                    <b>Fecha Completada:</b> {{selected!.data.completa}}<br>
                                     <b>Estado de la Tarea:</b> {{selected!.data.estado}}<br>
+                                    <b>Subtareas:</b><br>
                                     <br>
                                 </div>
-                                <div *ngFor="let child of selected!.children!" class="container">
-                                    <div>
-                                        <b>Tarea:</b> {{child!.data.nombre}}<br>
-                                        <b>Fecha Inicio:</b> {{child!.data.inicio}}<br>
-                                        <b>Fecha Fin:</b> {{child!.data.fin}}<br>
-                                        <b>Fecha Completada:</b> {{child!.data.completa}}<br>
-                                        <b>Estado de la Tarea:</b> {{child!.data.estado}}<br>
-                                        <br>
-                                    </div>
-                                    <div>
-                                        <div class="input-group">
-                                            <input type="date" id="finReal-{{child!.data.id}}" value="defaultDate">
-                                        </div>
+                                <div id="multipleChild" *ngIf="selected!.children.length">
+                                    <div *ngFor="let child of selected!.children!" class="container">
+                                        <ng-container *ngIf="(!child!.data!.estado.includes('Completa') && actionMode == 'fill') 
+                                        || actionMode == 'edit' ">
+                                            <div>
+                                                <b>Tarea:</b> {{child!.data.nombre}}<br>
+                                                <b>Fecha Inicio:</b> {{child!.data.inicio}}<br>
+                                                <b>Fecha Fin:</b> {{child!.data.fin}}<br>
+                                                <b>Fecha Completada:</b> {{child!.data.completa}}<br>
+                                                <b>Estado de la Tarea:</b> {{child!.data.estado}}<br>
+                                                <br>
+                                            </div>
+                                            <div>
+                                                <div class="input-group"  style="display: flex; flex-direction: column;">
+                                                    <p>Seleccione la fecha en que la tarea fue completada</p>
+                                                    <input type="date" id="finReal-{{child!.data.id}}" value="defaultDate">
+                                                </div>
+                                            </div>
+                                        </ng-container>
                                     </div>
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <button *ngIf="actionMode == 'fill'" id="completar" class="btn modal-btn" (click)="actualizarTarea()">Completar Tarea</button>
-                                <button *ngIf="actionMode == 'delete'" id="deshacer" class="btn modal-btn" (click)="deshacerTarea()">Deshacer Tarea</button>
+                                <button *ngIf="actionMode == 'fill'" id="completar" class="btn modal-btn" (click)="actualizarTarea()">Completar Tarea(s)</button>
+                                <button *ngIf="actionMode == 'edit'" id="editar" class="btn modal-btn" (click)="actualizarTarea()">Editar Tarea(s)</button>
                             </div>
                         </ng-container>
                         <ng-container *ngIf="actionMode == 'delete'">
                             <div id="taskHeader" class="modal-header">
                                 <h2><strong>Esta seguro de querer deshacer la tarea {{selected!.data.id}}: "{{selected!.data.nombre}}" y sus subtareas ?</strong></h2>
+                            </div>
+                            <div class="modal-footer">
+                                <button id="deshacer" class="btn modal-btn" id="cancelar" (click)="deshacerTarea()">Deshacer Tarea(s)</button>
                             </div>
                         </ng-container>
                     </ng-container>
@@ -92,49 +107,6 @@
 
             <!-- LOADING ANIMATION -->
             <!-- <div ¨ngIf="loading" id="loader"></div> -->
-
-            <!-- ALERT -->
-            <div *ngIf="alert" class="alert" id="alert">
-                <span class="closeBtn" (click)="clearAlert()">&times;</span>
-                {{alertMessage}}
-            </div>
         </div>
     </div>
-        <!-- <div class="modal" id="myModal">
-            <div class="modal-dialog">
-                <div class="modal-content">
-
-                    
-                    <div class="modal-header">
-                        <h2 id="modalHeader" class="modal-title"><strong>Tarea ID:</strong></h2>
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    </div>
-
-                    
-                    <div class="modal-body">
-                        <h3 style="padding-left: 10%;"></h3>
-                        <hr>
-                        
-                        <div class="row">
-                            <div class="col-md-6">
-                                <b>Fecha Inicio:</b><br>
-                                <b>Fecha Fin:</b><br>
-                                <b>Fecha Completada:</b><br>
-                                <b>Estado de la Tarea:</b><br>
-                            </div>
-                            <div class="col-md-6">
-                                <form class="form-inline">
-                                    <div class="form-group">
-                                        <div class="input-group">
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                        <hr>
-                        <button id=taskBtn class="btn btn-primary" data-dismiss="modal">Editar Tarea</button>
-                    </div>
-                </div>
-            </div>
-        </div> -->
 </body>

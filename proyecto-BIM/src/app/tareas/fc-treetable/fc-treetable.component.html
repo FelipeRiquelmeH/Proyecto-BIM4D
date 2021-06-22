@@ -43,7 +43,13 @@
                         [ngClass]="{
                             'idField': value.data[map.access(value)] == value.data.id,
                             'parent': value.data[map.access(value)] == value.data.id && value.expandable,
-                            'child': value.data[map.access(value)] == value.data.id && value.parent
+                            'child': value.data[map.access(value)] == value.data.id && value.parent,
+
+                            'stPending': value.data[map.access(value)] == 'Pendiente',
+                            'stClear': value.data[map.access(value)] == 'Completa',
+                            'stEarly': value.data[map.access(value)] == 'Completa [Adelantada]',
+                            'stPast': value.data[map.access(value)] == 'Completa [Fuera de Plazo]',
+                            'stLate': value.data[map.access(value)] == 'Atrasada'
                         }"
                         [fcStyleCell]="value.data[map.access(value)]">
                         {{ value.data[map.access(value)] | formatCell}}

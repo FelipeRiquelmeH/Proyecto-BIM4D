@@ -1,9 +1,9 @@
 import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
 import { faAngleDown, faAngleRight } from '@fortawesome/free-solid-svg-icons';
-import { ColumnMap } from '../models/columnMap';
-import { ColumnSetting } from '../models/columnSetting';
-import { Tarea } from '../models/tarea';
-import { TreeNode } from '../models/treeNode';
+import { ColumnMap } from '../../models/columnMap';
+import { ColumnSetting } from '../../models/columnSetting';
+import { Tarea } from '../../models/tarea';
+import { TreeNode } from '../../models/treeNode';
 
 export interface ActionEvent{
   tareas: TreeNode[] | null,
