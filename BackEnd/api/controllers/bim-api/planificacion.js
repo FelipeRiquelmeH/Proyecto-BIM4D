@@ -41,6 +41,36 @@ module.exports = {
             return err
         }
     },
+    async actualizarTareas(req, res){
+        try{
+            const tareas = req.body.tareas
+            const fechas = req.body.fechas
+
+            const query = await db.query(queries.actualizarTareas, [tareas, fechas])
+
+            let responses = []
+            if(query.rows.length){
+                for(let i = 0; i < query.rows.length; i++){
+                    let response = {
+                        status: 1,
+                        message: 'La tarea ' + query.rows[i]['id_tarea'] + ' ha sido actualizada!'
+                    }
+                    responses.push(response)
+                }
+            }else{
+                let response = {
+                    status: 0,
+                    message: 'La tareas no han podido ser completada'
+                }
+                responses.push(response)
+            }
+
+            res.send(responses)
+            return 200
+        }catch(err){
+            return err
+        }
+    },
     async deshacerTarea(req, res){
         try{
             const idTarea = req.body.idTarea
@@ -48,11 +78,13 @@ module.exports = {
 
             let responses = []
             if(query.rows.length){
-                let response = {
-                    status: 1,
-                    message: 'La tarea ' + idTarea + ' se deshizo exitosamente!'
+                for(let i = 0; i < query.rows.length; i++){
+                    let response = {
+                        status: 1,
+                        message: 'La tarea ' + idTarea + ' se deshizo exitosamente!'
+                    }
+                    responses.push(response)
                 }
-                responses.push(response)
             }else{
                 let response = {
                     status: 0,
@@ -61,7 +93,6 @@ module.exports = {
                 responses.push(response)
             }
 
-            console.log(responses)
             res.send(responses)
             return 200
         }catch(err){
@@ -89,7 +120,6 @@ module.exports = {
                 }
                 responses.push(response)
             }
-            console.log(responses)
             res.send(responses)
             return 200
         } catch (err) {

@@ -33,6 +33,7 @@ router.get('/forge',forgeOAuthController.test)
 //Planificacion calls
 router.post('/planificacion/get',planificacionController.getPlanificacion)
 router.post('/planificacion/update', planificacionController.actualizarTarea)
+router.post('/planificacion/updateMult', planificacionController.actualizarTareas)
 router.post('/planificacion/undoMult', planificacionController.deshacerTareas)
 router.post('/planificacion/undo',planificacionController.deshacerTarea)
 //BIM calls
