@@ -3,6 +3,18 @@ const db = require('./db/db')
 const queries = require('./db/queryList')
 
 module.exports = {
+    async getObjects(req, res){
+        try{
+            const idPlanificacion = req.body.idPlanificacion
+            const query = await db.query(queries.obtenerObjetos, [idPlanificacion])
+
+            res.send(query.rows)
+
+            return 200
+        }catch(err){
+            return err
+        }
+    },
     async getObjectRelations(req, res){
         try{
             const idPlanificacion = req.body.idPlanificacion
@@ -18,7 +30,8 @@ module.exports = {
         try{
             const idTarea = req.body.idTarea
             const idObjeto = req.body.idObjeto
-            const query = await db.query(queries.crearAvance,[idTarea, idObjeto])
+            const tipoAvance = req.body.tipoAvance
+            const query = await db.query(queries.crearAvances,[idTarea, idObjeto, tipoAvance])
 
             res.send(query.rows)
             return 200
@@ -40,7 +53,7 @@ module.exports = {
     async deleteRelation(req, res){
         try{
             const idAvance = req.body.idAvance
-            const query = await db.query(queries.eliminarAvance,[idAvance])
+            const query = await db.query(queries.eliminarAvances,[idAvance])
 
             res.send(query.rows)
             return 200
