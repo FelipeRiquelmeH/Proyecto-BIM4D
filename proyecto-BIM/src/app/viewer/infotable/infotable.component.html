@@ -1,4 +1,4 @@
-<table class="styled-table scrollable">
+<!-- <table class="styled-table scrollable">
 	<thead>
 		<tr>
 			<th class="row-header" *ngFor="let map of columnMaps">{{ map.header }}</th>
@@ -12,4 +12,57 @@
             </td>
 		</tr>
 	</tbody>
+</table> -->
+
+<table id="myTable" class="table table-responsive styled-table scrollable">
+    <ng-template *ngIf="values; then infoTable; else infoEmpty"></ng-template>
+    <ng-template #infoTable>
+        <thead>
+            <tr>
+				<th></th>
+                <th class="row-header" *ngFor="let map of columnMaps">{{ map.header }}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="clickable" *ngFor="let value of flatTable"  id="{{value.data.id}}" (click)="highlight($event)"
+            [ngClass]="{ 'invisible' : !value.visible }">
+                <ng-container>
+                    <td class="row-data"
+                        [ngClass]="{
+                            'parent': value.expandable,
+                            'child': value.expandable && value.parent
+                        }">
+                        <!-- <label class="container">
+                            <input type="checkbox" (change)="checkBoxSelect($event)" id="checkbox-{{value.data.id}}">
+                            <span class="checkmark"></span>
+                        </label> -->
+                        <button [style.--depth]="value.level" *ngIf="value.expandable" id="angleButton" [disabled]="!value.expandable" (click)="expandOrContract($event)">
+                            <fa-icon *ngIf="!value.expanded" [icon]="angleRight"></fa-icon>
+                            <fa-icon *ngIf="value.expanded" [icon]="angleDown"></fa-icon>
+                        </button>
+                    </td>
+                    <td class="row-data" *ngFor="let map of columnMaps"
+                        [ngClass]="{
+                            'idField': value.data[map.access(value)] == value.data.id,
+                            'parent': value.data[map.access(value)] == value.data.id && value.expandable,
+                            'child': value.data[map.access(value)] == value.data.id && value.parent,
+
+                            'stPending': value.data[map.access(value)] == 'Pendiente',
+                            'stClear': value.data[map.access(value)] == 'Completa',
+                            'stEarly': value.data[map.access(value)] == 'Completa [Adelantada]',
+                            'stPast': value.data[map.access(value)] == 'Completa [Fuera de Plazo]',
+                            'stLate': value.data[map.access(value)] == 'Atrasada'
+                        }"
+                        [fcStyleCell]="value.data[map.access(value)]">
+                        {{ value.data[map.access(value)] | formatCell}}
+                    </td>
+                </ng-container>
+            </tr>
+        </tbody>
+    </ng-template>
+    <ng-template #infoEmpty>
+        <div style="text-align: center;">
+            <h3>No hay datos disponibles para cargar</h3>
+        </div>
+    </ng-template>
 </table>

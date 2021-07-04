@@ -5,23 +5,23 @@
     font-family: sans-serif;
     min-width: 400px;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
-    // border-color: black;
-    // border-style: solid;
     width: 100%;
     display: block;
 }
 
-.scrollable {
+.scrollable{
     display: block;
     width: fit-content;
     overflow-y: scroll;
-    max-height: 400px;
+    overflow-x: scroll;
+    max-height: 500px;
+    max-width: 440px;
 }
-.row-header{
-    width: 60px;
-}.row-data{
-    width: 200px;
-}
+// .row-header{
+//     width: 200px;
+// }.row-data{
+//     width: 200px;
+// }
 
 .styled-table thead tr {
     background-color: #009879;
@@ -48,4 +48,96 @@
 
 .styled-table tbody tr.active-row {
     background-color: rgba(220, 220, 238, 0.89);
+}
+
+.invisible{
+    display: none;
+}
+
+.btn-groups{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.action-del{
+    background-color: #ff5252;
+    color: #ffffff;
+    cursor: pointer;
+}
+
+.action-edit{
+    background-color: #ffff00;
+    cursor: pointer;
+}
+
+.action-comp{
+    background-color: #08b960;
+    color: #ffffff;
+    cursor: pointer;
+}
+
+th > button{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 10%;
+    height: fit-content;
+    // -ms-transform: translateY(75%);
+    // transform: translateY(75%);
+}
+
+button:hover{
+    -webkit-transition: all 0.3s;
+    transition: all 0.3s;
+}
+
+.action-btn{
+    border-radius: 50px;
+}
+
+/**
+*Arrow button Style
+*/
+#angleButton{
+    background-color: transparent;
+    border-style: none;
+    border-radius: 50%;
+    cursor: pointer;
+    margin-left: calc(10px * var(--depth));
+}
+
+#angleButton:hover{
+    justify-content: center;
+    align-items: center;
+    background-color: rgb(165, 173, 197);
+    border-style: none;
+}
+
+#angleButton > fa-icon{
+    pointer-events: none;
+}
+
+/**
+*   ESTILOS CELDAS DE ESTADO
+*/
+.stClear{
+    background-color: #196d00;
+    color: white;
+}
+.stEarly{
+    background-color: #229b7e;
+    color: white;
+}
+.stPast{
+    background-color: #799400;
+    color: white;
+}
+.stPending{
+    background-color: #0083af;
+    color: white;
+}
+.stLate{
+    background-color: #8b1e00;
+    color: white;
 }

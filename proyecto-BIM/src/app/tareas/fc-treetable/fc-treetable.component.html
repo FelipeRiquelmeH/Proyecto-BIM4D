@@ -18,7 +18,7 @@
                     <button [style.visibility]="!multiple ? 'hidden' : 'visible'">Completar</button>
                 </th>
                 <th class="row-header" *ngFor="let map of columnMaps">{{ map.header }}</th>
-                <th class="action-header"> Acciones </th>
+                <th *ngIf="actionView" class="action-header"> Acciones </th>
             </tr>
         </thead>
         <tbody>
@@ -55,7 +55,7 @@
                         {{ value.data[map.access(value)] | formatCell}}
                     </td>
                     <!-- Action Buttons -->
-                    <td class="btn-groups btn-group-pill row-action">
+                    <td *ngIf="actionView" class="btn-groups btn-group-pill row-action">
                         <ng-container *ngIf="value.parent && value.data.estado.includes('Completa')">
                             <Button class="btn btn-tertiary action-btn action-edit"
                                 style="text-align: center;" (click)="isSelected($event,'edit')">
@@ -83,16 +83,3 @@
         </div>
     </ng-template>
 </table>
-
-<!-- <div class="btn-groups btn-group-pill">
-                        <Button pButton class="btn btn-tertiary"
-                          *ngIf="!rowNode.node.children.length && rowData.estado.includes('Completa')" data-toggle="modal"
-                          data-target="#myModal" style="text-align: center;" (click)="openModal('editar', rowNode.node)">
-                          Editar Tarea
-                        </Button>
-                        <Button pButton class="btn btn-danger"
-                          *ngIf="!rowNode.node.children.length && rowData.estado.includes('Completa')" style="text-align: center;"
-                          (click)="confirmarEliminar(rowNode.node)">
-                          Deshacer Tarea
-                        </Button>
-                      </div> -->

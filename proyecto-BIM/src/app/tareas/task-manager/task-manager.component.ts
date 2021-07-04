@@ -78,7 +78,13 @@ export class TaskManagerComponent implements OnInit {
           tarea.estado = 'Completa [Adelantada]'
         }
       }else{
-        tarea.estado = 'Pendiente'
+        let today = moment()
+        let diff = today.diff(fin)
+        if(diff > 0){
+          tarea.estado = 'Atrasada'
+        }else{
+          tarea.estado = 'Pendiente'
+        }
       }
 
       if(tareaJSON["subtareas"].length > 0){

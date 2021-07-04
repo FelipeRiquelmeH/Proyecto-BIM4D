@@ -37,7 +37,6 @@ export class RecursoService {
     return result
   }
   
-
   async deshacerTarea(idTarea: number | number[] ){
     let result
     if(Array.isArray(idTarea)){
@@ -47,6 +46,13 @@ export class RecursoService {
       const body = {"idTarea": idTarea}
       result = await this.http.post<any>(`${environment.apiUrl}/api/planificacion/undo`,body).toPromise()
     }
+
+    return result
+  }
+
+  async getObjects(idPlanificacion: number){
+    const body = {"idPlanificacion": idPlanificacion}
+    const result = await this.http.post<any>(`${environment.apiUrl}/api/bim/objects`, body).toPromise()
 
     return result
   }
@@ -64,7 +70,10 @@ export class RecursoService {
     return response
   }
 
-  async eliminarAvance(idAvance: number){
+  async eliminarAvance(idAvance: number | number[]){
+    if(!Array.isArray(idAvance)){
+      idAvance = [idAvance]
+    }
     const body = {"idAvance": idAvance}
     const result = await this.http.post<any>(`${environment.apiUrl}/api/bim/delete`,body).toPromise()
 

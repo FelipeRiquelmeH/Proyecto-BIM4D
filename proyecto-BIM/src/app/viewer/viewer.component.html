@@ -6,25 +6,99 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
 </head>
 <body>
+    <div id="glosario" class="capaGl">
+        <button class="capaGl botonCapa" id="botonCapaDef" disabled (click)="resetModel()">
+            <div class="colorCapa" id="capaDef"></div>
+            <p class="labelCapa">MODELO</p>
+        </button>
+        <div *ngFor="let capas of tareas, let i = index" style="margin-right: 5px;">
+            <button class="capaGl botonCapa" id="botonCapa-{{i}}" disabled value="{{capas.id}}" (click)="mostrarCapa($event)">
+                <div class="colorCapa" id="capa-{{i}}"></div>
+                <p class="labelCapa">{{capas.nombre}}</p>
+            </button>
+        </div>
+    </div>
     <div class="container">
         <div id="viewer" class="column"> 
-            <div id="bimViewer" class="viewer"></div>
+            <div id="bimViewer" class="viewer" style="height: 70%;"></div>
         </div>
         <div class="column" id="infoSec" style="height: 100%;">
             <div id="secTitle">
                 <p>Resumen de Tareas</p>
-                <div style="display: flex; justify-content: space-between;" >
-                    <p>Tarea a elegir</p>
-                    <select id="tareasSelect">
-                        <option *ngFor="let tarea of tareas" value="{{tarea.id}}">{{tarea.id}}. {{tarea.nombre}}</option>
-                    </select>
+            </div>
+            <!-- Informacion del objeto -->
+            <div id="infoPanel">
+                <div class="infoDiv">
+                    <p>Objeto Seleccionado: </p><p id="nombreObjeto"></p>
+                </div>
+                <div class="infoDiv">
+                    <p>DBId Objeto: </p><p id="dbId"></p>
+                </div>
+                <div class="infoDiv">
+                    <p>Capa asignada: </p><p id="capaId"></p>
+                </div>
+                <div class="infoDiv">
+                    <p>Ciclo asignado: </p><p id="cicloId"></p>
+                </div>
+                <div class="infoDiv">
+                    <p>Tarea asignada: </p><p id="tareaId"></p>
+                </div>
+                <div class="infoDiv">
+                    <p>Estado: </p><p id="estadoObj"></p>
+                </div>
+                <div class="infoDiv">
+                    <p>Fecha inicio tarea: </p><p id="inicioTarea"></p>
+                </div>
+                <div class="infoDiv">
+                    <p>Fecha fin tarea: </p><p id="finTarea"></p>
                 </div>
             </div>
-            <div id="secBody">
-                <infotable [values]="tareas"></infotable>
-            </div>
+            <!-- Informacion de la planificacion -->
+            <!-- <div id="secBody">
+                <infotable id="tablaTareas" [values]="tareas"></infotable>
+            </div> -->
         </div>
         <div id="hiddenDiv" data-objectid="" data-avanceid="" data-changetype="clear" (domChange)="onDataChange($event)">
+        </div>
+    </div>
+
+    <!-- Secciones viewer -->
+    <div id="panelSemanalProg">
+        <p>Seleccionar semana de avance</p>
+        <select id="semanalProg" (change)="mostrarAvanceProgramado($event)">
+            <option *ngFor="let semProg of semanasProg" value="{{semProg.id}}">{{semProg.descripcion}}</option>
+        </select>
+    </div>
+    <div id="panelSemanalReal">
+        <p>Seleccionar semana de avance</p>
+        <select id="semanalReal" (change)="mostrarAvanceReal($event)">
+            <option *ngFor="let semReal of semanasReal" value="{{semReal.id}}">{{semReal.descripcion}}</option>
+        </select>
+    </div>
+    <div id="infoPanelLayer">
+        <p>Asignar capa/layer</p>
+        <div style="display: flex; justify-content: space-between;">
+            <select id="tareaLayer" (change)="onSelectChange($event)">
+                <option value="0">-- Capa --</option>
+                <option *ngFor="let tarea of tareas" value="{{tarea.id}}">{{tarea.nombre}}</option>
+            </select>
+            <button (click)="asignarLayer()">Asignar Capa</button>
+        </div>
+        <p>Asignar Ciclo</p>
+        <div style="display: flex; justify-content: space-between;">
+            <select id="tareaCiclo" (change)="onSelectChange($event)">
+                <option value="0">-- Ciclo --</option>
+                <option *ngFor="let ciclo of ciclos" value="{{ciclo.id}}">{{ciclo.nombre}}</option>
+            </select>
+            <button (click)="asignarCiclo()">Asignar Ciclo</button>
+        </div>
+        <p>Asignar tarea individual</p>
+        <div style="display: flex; justify-content: space-between;">
+            <select id="tareaObjeto">
+                <option value="0">-- Tarea --</option>
+                <option *ngFor="let tarea of subtareas" value="{{tarea.id}}">{{tarea.nombre}}</option>
+            </select>
+            <button (click)="asignarTarea()">Asignar Tarea</button>
         </div>
     </div>
 </body>

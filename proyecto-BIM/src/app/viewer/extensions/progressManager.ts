@@ -29,14 +29,31 @@ export class ProgressManagerExtension {
         return 'AssignTaskContextMenu'
     }
 
-    buscarAvance(idObjeto: number){
-        for(let i = 0; i < this.avances.length; i++){
-            if(this.avances[i]['id_objeto'] == idObjeto){
-                return this.avances[i]['id_avance']
+    buscarAvances(objetos: number[]){
+        let avances: number[] = []
+        for(let i = 0; i < objetos.length; i++){
+            for(let j = 0; j < this.avances.length; j++){
+                if(this.avances[j]['id_objeto'] == objetos[i]){
+                    avances.push(this.avances[j]['id_avance'])
+                }
             }
         }
 
-        return -1
+        return avances
+    }
+
+    asignarTareas(objects: any[]){
+        let infoPanel = <HTMLElement> document.querySelector('#infoPanelLayer')
+        infoPanel.style.display = "block"
+
+        let panelLayer = new Autodesk.Viewing.UI.DockingPanel(this.viewer.container,'layerSelect','Seleccionar Capa/Layer')
+        panelLayer.container.classList.add('docking-panel-container-solid-color-a')
+        panelLayer.container.style.top = '10px'
+        panelLayer.container.style.left = '10px'
+        panelLayer.container.style.width = '350px'
+        panelLayer.container.style.heigth = '200px'
+        panelLayer.container.appendChild(infoPanel)
+        panelLayer.setVisible(true)
     }
 
     sendAvance(objectId: any){
@@ -45,36 +62,31 @@ export class ProgressManagerExtension {
         div.dataset.changetype = "change"
     }
 
-    sendAvanceDelete(idObjeto: any){
-        let idAvance = this.buscarAvance(idObjeto)
-        if(idAvance != -1){
-            let div = <HTMLElement> document.querySelector('#hiddenDiv')
-            div.dataset.avanceid = idAvance
-            div.dataset.changetype = "change"
-        }
+    sendAvanceDelete(avances: any){
+        let div = <HTMLElement> document.querySelector('#hiddenDiv')
+        div.dataset.avanceid = avances
+        div.dataset.changetype = "change"
+        
     }
 
     onBuildingContextMenuItem(menu, status){
         if(status.hasSelected){
-            let id_avance = this.buscarAvance(this.viewer.getSelection())
-            if(id_avance == -1){
-                menu.push({
-                    title: 'Asignar tarea a objeto seleccionado',
-                    target: () => {
-                        const selSet = this.viewer.getSelection();
-                        this.viewer.clearSelection();
-
-                        this.sendAvance(selSet)
-                    }
-                });
-            }else{
+            menu.push({
+                title: 'Asignar tareas a seleccion',
+                target: () => {
+                    const selSet = this.viewer.getSelection()
+                    this.asignarTareas(selSet)
+                }
+            })
+            let id_avance = this.buscarAvances(this.viewer.getSelection())
+            
+            if(id_avance.length){
                 menu.push({
                     title: 'Remover tarea asignada a objeto',
                     target: () => {
-                        const selSet = this.viewer.getSelection();
                         this.viewer.clearSelection();
 
-                        this.sendAvanceDelete(selSet)
+                        this.sendAvanceDelete(id_avance)
                     }
                 });
             }
@@ -82,7 +94,7 @@ export class ProgressManagerExtension {
     }
 
     assignTask(relations: any[]){
-        const defaultC = new THREE.Vector4(0, 0, 0);
+        const defaultC = new THREE.Vector4(255, 255, 255);
         for(let i = 0; i < relations.length; i++){
             let selSet = relations[i]['idObjeto']
             let colorArray = relations[i]['color']

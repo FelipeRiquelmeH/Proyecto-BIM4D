@@ -7,6 +7,7 @@ body {
 }
 
 .container{
+    margin-top: 10px;
     padding-left: 10px;
     display: flex;
     flex-direction: row;
@@ -23,4 +24,61 @@ body {
     position: absolute;
     width: 65%;
     height: 70%;
+}
+
+#panelSemanalProg, #panelSemanalReal, #infoPanelLayer{
+    display: none;
+}
+
+#panelSemanalProg, #panelSemanalReal, #infoPanelLayer{
+    margin: 10px;
+}
+.colorCapa{
+    height: 10px;
+    width: 10px;
+    border: solid gray;
+    margin-right: 10px;
+}
+
+#capaDef{
+    background-color: rgb(255,255,255);
+}
+
+.capaGl{
+    display: flex;
+    flex-direction: row;
+}
+
+#glosario{
+    margin-left: 35%;
+}
+
+.labelCapa, .colorCapa{
+    pointer-events: none;
+}
+
+.botonCapa{
+    height: 20px;
+    background-color: transparent;
+    border: none;
+}
+.botonCapa:hover{
+    cursor: pointer;
+}
+
+.infoDiv{
+    margin: 5px;
+    display: flex;
+    justify-content: space-between;
+}
+
+#selectorTarea{
+    display: flex; 
+    justify-content: space-between;
+    text-align: center;
+}
+
+#infoPanel{
+    border: solid gray;
+    border-radius: 25px;
 }

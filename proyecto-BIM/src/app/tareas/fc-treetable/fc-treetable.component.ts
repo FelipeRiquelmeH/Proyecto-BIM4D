@@ -21,6 +21,7 @@ export class FcTreetableComponent implements OnChanges {
   @Input() settings: ColumnSetting[]
   @Input() pagination: boolean
   @Input() scroll: boolean = false;
+  @Input() actionView: boolean = true;
 
   @Output() notify: EventEmitter<ActionEvent> = new EventEmitter<ActionEvent>()
 
